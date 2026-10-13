@@ -1,0 +1,13 @@
+{
+  "name": "chuhan-ai-bench",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Frozen, standalone paired AI benchmark",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "verify": "node tools/verify.js",
+    "smoke": "node tools/pairs.js --seeds 500006 --out results"
+  }
+}

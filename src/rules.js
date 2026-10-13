@@ -1,0 +1,710 @@
+(function(global) {
+    const W = 9, H = 10;
+    const TYPES = [ "k", "a", "e", "r", "n", "c", "p" ];
+    const NAMES = {
+        r: {
+            k: "帥",
+            a: "仕",
+            e: "相",
+            r: "俥",
+            n: "傌",
+            c: "炮",
+            p: "兵"
+        },
+        b: {
+            k: "將",
+            a: "士",
+            e: "象",
+            r: "車",
+            n: "馬",
+            c: "砲",
+            p: "卒"
+        }
+    };
+    const TYPE_CN = {
+        k: "帅",
+        a: "士",
+        e: "相",
+        r: "车",
+        n: "马",
+        c: "炮",
+        p: "兵"
+    };
+    function initialBoard() {
+        const b = [];
+        for (let r = 0; r < H; r++) b.push(new Array(W).fill(null));
+        const back = [ "r", "n", "e", "a", "k", "a", "e", "n", "r" ];
+        for (let f = 0; f < W; f++) {
+            b[0][f] = {
+                s: "r",
+                t: back[f]
+            };
+            b[9][f] = {
+                s: "b",
+                t: back[f]
+            };
+        }
+        b[2][1] = {
+            s: "r",
+            t: "c"
+        };
+        b[2][7] = {
+            s: "r",
+            t: "c"
+        };
+        b[7][1] = {
+            s: "b",
+            t: "c"
+        };
+        b[7][7] = {
+            s: "b",
+            t: "c"
+        };
+        for (let f = 0; f < W; f += 2) {
+            b[3][f] = {
+                s: "r",
+                t: "p"
+            };
+            b[6][f] = {
+                s: "b",
+                t: "p"
+            };
+        }
+        let id = 0;
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) if (b[r][f]) b[r][f].id = id++;
+        return b;
+    }
+    const JQ_SQ = {
+        r: [],
+        b: []
+    }, JQ_STD = {
+        r: [],
+        b: []
+    };
+    (() => {
+        const b = initialBoard();
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) {
+            const p = b[r][f];
+            if (p && p.t !== "k") {
+                JQ_SQ[p.s].push([ f, r ]);
+                JQ_STD[p.s].push(p.t);
+            }
+        }
+    })();
+    const JQ_COUNT = {
+        r: 2,
+        n: 2,
+        e: 2,
+        a: 2,
+        c: 2,
+        p: 5
+    };
+    function rand(n) {
+        try {
+            const a = new Uint32Array(1);
+            (global.crypto || require("crypto").webcrypto).getRandomValues(a);
+            return a[0] % n;
+        } catch (e) {
+            return Math.floor(Math.random() * n);
+        }
+    }
+    function shuffle(a) {
+        a = a.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = rand(i + 1);
+            [a[i], a[j]] = [ a[j], a[i] ];
+        }
+        return a;
+    }
+    const randomLayout = () => ({
+        r: shuffle(JQ_STD.r),
+        b: shuffle(JQ_STD.b)
+    });
+    function jieqiBoard(layout) {
+        const b = initialBoard();
+        for (const s of [ "r", "b" ]) JQ_SQ[s].forEach(([f, r], i) => {
+            const p = b[r][f];
+            p.pt = p.t;
+            p.h = 1;
+            p.j = 1;
+            p.hi = i;
+            p.t = layout && layout[s] ? layout[s][i] : "?";
+        });
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) {
+            const p = b[r][f];
+            if (p && p.t === "k") p.j = 1;
+        }
+        return b;
+    }
+    const et = p => p.h ? p.pt : p.t;
+    const inBoard = (f, r) => f >= 0 && f < W && r >= 0 && r < H;
+    const inPalace = (s, f, r) => f >= 3 && f <= 5 && (s === "r" ? r <= 2 : r >= 7);
+    const ownHalf = (s, r) => s === "r" ? r <= 4 : r >= 5;
+    const other = s => s === "r" ? "b" : "r";
+    function pseudoMoves(b, f, r) {
+        const p = b[r][f];
+        if (!p) return [];
+        const s = p.s, out = [];
+        const free = p.j && !p.h;
+        const add = (tf, tr) => {
+            if (!inBoard(tf, tr)) return;
+            const q = b[tr][tf];
+            if (q && q.s === s) return;
+            out.push({
+                from: [ f, r ],
+                to: [ tf, tr ]
+            });
+        };
+        switch (et(p)) {
+          case "k":
+            if (p.w) {
+                add(f, r + (s === "r" ? 1 : -1));
+                add(f + 1, r);
+                add(f - 1, r);
+                break;
+            }
+            for (const [df, dr] of [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]) if (inPalace(s, f + df, r + dr)) add(f + df, r + dr);
+            break;
+
+          case "a":
+            for (const [df, dr] of [ [ 1, 1 ], [ 1, -1 ], [ -1, 1 ], [ -1, -1 ] ]) if (free ? inBoard(f + df, r + dr) : inPalace(s, f + df, r + dr)) add(f + df, r + dr);
+            break;
+
+          case "e":
+            for (const [df, dr] of [ [ 2, 2 ], [ 2, -2 ], [ -2, 2 ], [ -2, -2 ] ]) {
+                const tf = f + df, tr = r + dr;
+                if (!inBoard(tf, tr) || !free && !ownHalf(s, tr)) continue;
+                if (b[r + dr / 2][f + df / 2]) continue;
+                add(tf, tr);
+            }
+            break;
+
+          case "n":
+            for (const [df, dr, lf, lr] of [ [ 1, 2, 0, 1 ], [ -1, 2, 0, 1 ], [ 1, -2, 0, -1 ], [ -1, -2, 0, -1 ], [ 2, 1, 1, 0 ], [ 2, -1, 1, 0 ], [ -2, 1, -1, 0 ], [ -2, -1, -1, 0 ] ]) {
+                if (!inBoard(f + df, r + dr)) continue;
+                if (b[r + lr][f + lf]) continue;
+                add(f + df, r + dr);
+            }
+            break;
+
+          case "r":
+            for (const [df, dr] of [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]) {
+                let tf = f + df, tr = r + dr;
+                while (inBoard(tf, tr)) {
+                    if (b[tr][tf]) {
+                        if (b[tr][tf].s !== s) out.push({
+                            from: [ f, r ],
+                            to: [ tf, tr ]
+                        });
+                        break;
+                    }
+                    out.push({
+                        from: [ f, r ],
+                        to: [ tf, tr ]
+                    });
+                    tf += df;
+                    tr += dr;
+                }
+            }
+            break;
+
+          case "c":
+            for (const [df, dr] of [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]) {
+                let tf = f + df, tr = r + dr, jumped = false;
+                while (inBoard(tf, tr)) {
+                    const q = b[tr][tf];
+                    if (!jumped) {
+                        if (q) jumped = true; else out.push({
+                            from: [ f, r ],
+                            to: [ tf, tr ]
+                        });
+                    } else if (q) {
+                        if (q.s !== s) out.push({
+                            from: [ f, r ],
+                            to: [ tf, tr ]
+                        });
+                        break;
+                    }
+                    tf += df;
+                    tr += dr;
+                }
+            }
+            break;
+
+          case "p":
+            {
+                const fwd = s === "r" ? 1 : -1;
+                add(f, r + fwd);
+                if (!ownHalf(s, r)) {
+                    add(f + 1, r);
+                    add(f - 1, r);
+                }
+                break;
+            }
+        }
+        return out;
+    }
+    function findKing(b, s) {
+        for (let r = 0; r < H; r++) for (let f = 3; f <= 5; f++) {
+            const p = b[r][f];
+            if (p && p.s === s && p.t === "k") return [ f, r ];
+        }
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) {
+            const p = b[r][f];
+            if (p && p.s === s && p.t === "k") return [ f, r ];
+        }
+        return null;
+    }
+    function inCheck(b, s) {
+        const k = findKing(b, s);
+        if (!k) return true;
+        const [kf, kr] = k;
+        const o = other(s);
+        const dir = s === "r" ? 1 : -1, wk = !!b[kr][kf].w;
+        if (!wk) for (let r = kr + dir; r >= 0 && r < H; r += dir) {
+            const q = b[r][kf];
+            if (q) {
+                if (q.s === o && q.t === "k") return true;
+                break;
+            }
+        }
+        for (const [df, dr] of [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]) {
+            let f = kf + df, r = kr + dr, screens = 0;
+            while (inBoard(f, r)) {
+                const q = b[r][f];
+                if (q) {
+                    if (screens === 0) {
+                        if (q.s === o && et(q) === "r") return true;
+                        screens = 1;
+                    } else {
+                        if (q.s === o && et(q) === "c") return true;
+                        break;
+                    }
+                }
+                f += df;
+                r += dr;
+            }
+        }
+        for (const [df, dr, lf, lr] of [ [ 1, 2, 1, 1 ], [ -1, 2, -1, 1 ], [ 1, -2, 1, -1 ], [ -1, -2, -1, -1 ], [ 2, 1, 1, 1 ], [ 2, -1, 1, -1 ], [ -2, 1, -1, 1 ], [ -2, -1, -1, -1 ] ]) {
+            const f = kf + df, r = kr + dr;
+            if (!inBoard(f, r)) continue;
+            const q = b[r][f];
+            if (q && q.s === o && et(q) === "n" && !b[kr + lr][kf + lf]) return true;
+        }
+        const ofwd = o === "r" ? 1 : -1;
+        const pr = kr - ofwd;
+        if (inBoard(kf, pr)) {
+            const q = b[pr][kf];
+            if (q && q.s === o && (et(q) === "p" || q.t === "k" && q.w)) return true;
+        }
+        for (const df of [ 1, -1 ]) {
+            if (!inBoard(kf + df, kr)) continue;
+            const q = b[kr][kf + df];
+            if (q && q.s === o && (et(q) === "p" && !ownHalf(o, kr) || q.t === "k" && q.w)) return true;
+        }
+        for (const [df, dr] of [ [ 1, 1 ], [ 1, -1 ], [ -1, 1 ], [ -1, -1 ] ]) {
+            const f1 = kf + df, r1 = kr + dr;
+            if (!inBoard(f1, r1)) continue;
+            const q = b[r1][f1];
+            if (q && q.s === o && q.j && !q.h && q.t === "a") return true;
+            const f2 = kf + 2 * df, r2 = kr + 2 * dr;
+            if (!q && inBoard(f2, r2)) {
+                const e = b[r2][f2];
+                if (e && e.s === o && e.j && !e.h && e.t === "e") return true;
+            }
+        }
+        return false;
+    }
+    function checkers(b, s) {
+        const k = findKing(b, other(s));
+        if (!k) return [];
+        if (!inCheck(b, other(s))) return [];
+        const out = [];
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) {
+            const p = b[r][f];
+            if (p && p.s === s && pseudoMoves(b, f, r).some(m => m.to[0] === k[0] && m.to[1] === k[1])) out.push(p.id);
+        }
+        return out;
+    }
+    function threats(b, f, r) {
+        const p = b[r][f];
+        if (!p) return [];
+        return legalMovesFrom(b, f, r).map(m => b[m.to[1]][m.to[0]]).filter(q => q && q.s !== p.s && q.t !== "k").map(q => q.id);
+    }
+    function applyMove(b, m) {
+        const [ff, fr] = m.from, [tf, tr] = m.to;
+        const captured = b[tr][tf];
+        b[tr][tf] = b[fr][ff];
+        b[fr][ff] = null;
+        return captured;
+    }
+    function undoMove(b, m, captured) {
+        const [ff, fr] = m.from, [tf, tr] = m.to;
+        b[fr][ff] = b[tr][tf];
+        b[tr][tf] = captured;
+    }
+    function kingsFace(b) {
+        const k = findKing(b, "r"), k2 = findKing(b, "b");
+        if (!k || !k2 || k[0] !== k2[0] || b[k[1]][k[0]].w) return false;
+        for (let r = Math.min(k[1], k2[1]) + 1; r < Math.max(k[1], k2[1]); r++) if (b[r][k[0]]) return false;
+        return true;
+    }
+    function legalMovesFrom(b, f, r) {
+        const p = b[r][f];
+        if (!p) return [];
+        return pseudoMoves(b, f, r).filter(m => {
+            const cap = applyMove(b, m);
+            const bad = inCheck(b, p.s);
+            undoMove(b, m, cap);
+            return !bad;
+        });
+    }
+    function allLegalMoves(b, s) {
+        const out = [];
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) {
+            const p = b[r][f];
+            if (p && p.s === s) out.push(...legalMovesFrom(b, f, r));
+        }
+        return out;
+    }
+    class Game {
+        constructor(opts) {
+            this.opts = opts && opts.jq ? {
+                jq: true,
+                layout: opts.layout || null
+            } : null;
+            this.reset();
+        }
+        get jq() {
+            return !!this.opts;
+        }
+        reset() {
+            this.board = this.jq ? jieqiBoard(this.opts.layout) : initialBoard();
+            this.turn = "r";
+            this.history = [];
+            this.result = null;
+        }
+        clone() {
+            const g = new Game(this.opts);
+            g.board = this.board.map(row => row.map(p => p ? {
+                ...p
+            } : null));
+            g.turn = this.turn;
+            g.history = this.history.slice();
+            g.result = this.result;
+            return g;
+        }
+        at(f, r) {
+            return inBoard(f, r) ? this.board[r][f] : null;
+        }
+        legalFrom(f, r) {
+            const p = this.at(f, r);
+            if (!p || p.s !== this.turn || this.result) return [];
+            const ms = legalMovesFrom(this.board, f, r);
+            return this.jq ? ms.filter(m => !this.forbidden(m)) : ms;
+        }
+        isLegal(m) {
+            return this.legalFrom(m.from[0], m.from[1]).some(x => x.to[0] === m.to[0] && x.to[1] === m.to[1]);
+        }
+        selfCheckFrom(f, r) {
+            const p = this.at(f, r);
+            if (!p || p.s !== this.turn || this.result) return [];
+            const b = this.board, out = [];
+            for (const m of pseudoMoves(b, f, r)) {
+                const cap = applyMove(b, m);
+                const bad = inCheck(b, p.s), face = bad && kingsFace(b);
+                undoMove(b, m, cap);
+                if (bad) out.push({
+                    ...m,
+                    why: face ? "face" : "self"
+                });
+            }
+            return out;
+        }
+        blockedFrom(f, r) {
+            const p = this.at(f, r);
+            if (!this.jq || !p || p.s !== this.turn || this.result) return [];
+            return legalMovesFrom(this.board, f, r).map(m => ({
+                ...m,
+                why: this.forbidden(m)
+            })).filter(m => m.why);
+        }
+        forbidden(m) {
+            if (!this.jq) return null;
+            const b = this.board, s = this.turn;
+            const pid = b[m.from[1]][m.from[0]].id;
+            const mine = [];
+            for (let i = this.history.length - 2; i >= 0 && mine.length < 6; i -= 2) mine.push(this.history[i]);
+            if (mine.length < 6) return null;
+            const longCk = mine.every(h => h.ck && h.ck.length), longCh = mine.every(h => h.pid === pid && h.tg && h.tg.length);
+            if (!longCk && !longCh) return null;
+            const cap = applyMove(b, m);
+            const ck = longCk ? checkers(b, s) : [], tg = longCh ? threats(b, m.to[0], m.to[1]) : [];
+            undoMove(b, m, cap);
+            for (const id of ck) if (mine.every(h => h.ck && h.ck.includes(id))) return "check";
+            for (const id of tg) if (mine.every(h => h.pid === pid && h.tg && h.tg.includes(id))) return "chase";
+            return null;
+        }
+        quietPlies() {
+            let n = 0;
+            for (let i = this.history.length - 1; i >= 0 && !this.history[i].cap; i--) n++;
+            return n;
+        }
+        play(m) {
+            if (!this.isLegal(m)) return null;
+            const src = this.at(m.from[0], m.from[1]);
+            let reveal = null;
+            if (src.h) {
+                reveal = src.t !== "?" ? src.t : m.rv;
+                if (!reveal || !"rnecap".includes(reveal) || reveal.length !== 1) return null;
+            }
+            const mt = et(src);
+            const before = {
+                ...src
+            };
+            const captured = applyMove(this.board, m);
+            const moved = this.board[m.to[1]][m.to[0]];
+            if (reveal) {
+                moved.t = reveal;
+                moved.h = 0;
+            }
+            const mover = this.turn;
+            this.turn = other(this.turn);
+            const check = inCheck(this.board, this.turn);
+            const replies = allLegalMoves(this.board, this.turn);
+            const info = {
+                from: m.from.slice(),
+                to: m.to.slice(),
+                piece: {
+                    ...moved
+                },
+                mt: mt,
+                reveal: reveal ? {
+                    t: reveal,
+                    pt: before.pt
+                } : null,
+                captured: captured ? {
+                    ...captured
+                } : null,
+                check: check,
+                mover: mover,
+                crossesRiver: m.from[1] <= 4 !== m.to[1] <= 4,
+                ply: this.history.length
+            };
+            const h = {
+                from: m.from.slice(),
+                to: m.to.slice(),
+                cap: captured ? {
+                    ...captured
+                } : null,
+                pid: before.id
+            };
+            if (reveal) h.rv = reveal;
+            if (m.cj != null) h.cj = m.cj;
+            if (this.jq) {
+                h.ck = checkers(this.board, mover);
+                h.tg = threats(this.board, m.to[0], m.to[1]);
+            }
+            this.history.push(h);
+            let legalReplies = replies.length;
+            if (this.jq && legalReplies) legalReplies = replies.filter(x => !this.forbidden(x)).length;
+            if (legalReplies === 0) {
+                this.result = {
+                    winner: mover,
+                    loser: this.turn,
+                    reason: check ? "checkmate" : "stalemate"
+                };
+                info.result = this.result;
+            } else if (this.jq && this.quietPlies() >= 80) {
+                this.result = {
+                    winner: null,
+                    loser: null,
+                    reason: "draw"
+                };
+                info.result = this.result;
+            }
+            return info;
+        }
+        undo() {
+            const h = this.history.pop();
+            if (!h) return null;
+            const [ff, fr] = h.from, [tf, tr] = h.to;
+            this.board[fr][ff] = this.board[tr][tf];
+            if (h.rv) this.board[fr][ff].h = 1;
+            this.board[tr][tf] = h.cap ? {
+                ...h.cap
+            } : null;
+            this.turn = other(this.turn);
+            this.result = null;
+            return h;
+        }
+        timeout(side) {
+            if (this.result) return null;
+            this.result = {
+                winner: other(side),
+                loser: side,
+                reason: "timeout"
+            };
+            return this.result;
+        }
+        resign(side) {
+            if (this.result) return null;
+            this.result = {
+                winner: other(side),
+                loser: side,
+                reason: "resign"
+            };
+            return this.result;
+        }
+        inCheck(s) {
+            return inCheck(this.board, s || this.turn);
+        }
+        kingPos(s) {
+            return findKing(this.board, s);
+        }
+    }
+    function mateName(b, loser, last) {
+        const W_ = other(loser), K = findKing(b, loser);
+        if (!K) return "";
+        const [kf, kr] = K, back = loser === "r" ? 0 : H - 1, dirIn = loser === "r" ? 1 : -1;
+        const at = (f, r) => inBoard(f, r) ? b[r][f] : null;
+        const mine = [];
+        for (let r = 0; r < H; r++) for (let f = 0; f < W; f++) {
+            const p = b[r][f];
+            if (p && p.s === W_) mine.push({
+                p: p,
+                f: f,
+                r: r,
+                t: et(p)
+            });
+        }
+        const hits = (x, f, r) => pseudoMoves(b, x.f, x.r).some(m => m.to[0] === f && m.to[1] === r);
+        const chk = mine.filter(x => x.t !== "k" && hits(x, kf, kr));
+        const of = t => mine.filter(x => x.t === t);
+        const between = (f0, r0, f1, r1) => {
+            const out = [], df = Math.sign(f1 - f0), dr = Math.sign(r1 - r0);
+            if (df && dr) return out;
+            for (let f = f0 + df, r = r0 + dr; f !== f1 || r !== r1; f += df, r += dr) {
+                const q = b[r][f];
+                if (q) out.push({
+                    p: q,
+                    f: f,
+                    r: r,
+                    t: et(q)
+                });
+            }
+            return out;
+        };
+        const kingHelps = () => {
+            const wk = findKing(b, W_);
+            if (!wk) return false;
+            for (const [df, dr] of [ [ 1, 0 ], [ -1, 0 ], [ 0, 1 ], [ 0, -1 ] ]) {
+                const f = kf + df, r = kr + dr;
+                if (!inBoard(f, r) || !inPalace(loser, f, r)) continue;
+                const q = b[r][f];
+                if (q && q.s === loser) continue;
+                if (f !== wk[0]) continue;
+                const save = b[r][f];
+                b[r][f] = b[kr][kf];
+                b[kr][kf] = null;
+                const clear = between(f, r, wk[0], wk[1]).length === 0;
+                const others = mine.some(x => x.t !== "k" && !(x.f === f && x.r === r) && pseudoMoves(b, x.f, x.r).some(m => m.to[0] === f && m.to[1] === r));
+                b[kr][kf] = b[r][f];
+                b[r][f] = save;
+                if (clear && !others) return true;
+            }
+            return false;
+        };
+        const horses = of("n"), rooks = of("r"), cannons = of("c"), pawns = of("p");
+        const corner = (kf === 3 || kf === 5) && (kr === back || kr === back + 2 * dirIn);
+        const baJiao = corner && horses.some(h => Math.abs(h.f - kf) === 2 && Math.abs(h.r - kr) === 2 && h.f >= 3 && h.f <= 5);
+        const diaoYu = horses.some(h => (h.f === 2 || h.f === 6) && h.r === back + 2 * dirIn);
+        const c0 = chk[0];
+        if (chk.length >= 2) {
+            const ts = chk.map(x => x.t).sort().join("");
+            if (ts === "cc") return "重炮";
+            if (ts === "nn") return "双马饮泉";
+            if (ts === "rr") return "双车错";
+            return "双将";
+        }
+        if (!c0) return kingHelps() ? "白脸将" : "";
+        if (c0.t === "c") {
+            const scr = between(c0.f, c0.r, kf, kr)[0];
+            if (scr && scr.p.s === W_ && scr.t === "c") return "重炮";
+            if (scr && scr.p.s === W_ && scr.t === "n") return "马后炮";
+            if (cannons.length >= 2) {
+                const o = cannons.find(x => x !== c0);
+                const onFile = x => x.f === 4, onBack = x => x.r === back;
+                if (onFile(c0) && onBack(o) || onBack(c0) && onFile(o)) return "天地炮";
+            }
+            if (scr && scr.p.s === loser && (scr.t === "a" || scr.t === "e") && Math.abs(scr.f - kf) + Math.abs(scr.r - kr) === 1) return "闷宫";
+            if (baJiao) return "八角马";
+            if (rooks.length) return "车炮合杀";
+            if (horses.length) return "马炮合杀";
+            if (pawns.length) return "炮兵合杀";
+            return scr && scr.p.s === loser ? "闷宫" : "";
+        }
+        if (c0.t === "n") {
+            if (kr === back && kf === 4 && (c0.f === 2 || c0.f === 6) && c0.r === back + dirIn) return "卧槽马";
+            if (kr === back && kf === 4 && (c0.f === 3 || c0.f === 5) && c0.r === back + 2 * dirIn) return "挂角马";
+            if (horses.length >= 2 && horses.every(h => Math.abs(h.f - kf) <= 3 && Math.abs(h.r - kr) <= 3)) return "双马饮泉";
+            if (rooks.length) return "车马合杀";
+            if (cannons.length) return "马炮合杀";
+            if (pawns.length) return "马兵合杀";
+            return "单马擒王";
+        }
+        if (c0.t === "r" || c0.t === "p") {
+            if (c0.t === "r" && last && last.cap && et(last.cap) === "a" && last.to && last.to[0] === 4 && last.to[1] === back + dirIn && c0.f === 4 && c0.r === back + dirIn) return "大刀剜心";
+            if (cannons.some(c => c.f === 4 && kf === 4 || c.f === kf && between(c.f, c.r, kf, kr).length >= 1 && between(c.f, c.r, kf, kr).length <= 2)) return "铁门栓";
+            if (baJiao) return "八角马";
+            if (c0.t === "r" && diaoYu) return "钓鱼马";
+            if (c0.t === "r" && rooks.length >= 2) {
+                const o = rooks.find(x => x !== c0);
+                if (c0.r === kr && Math.abs(o.r - kr) === 1 || c0.f === kf && Math.abs(o.f - kf) === 1 || Math.abs(o.r - c0.r) === 1 || Math.abs(o.f - c0.f) === 1) return "双车错";
+            }
+            if (c0.t === "p" && pawns.filter(x => x.f >= 3 && x.f <= 5 && Math.abs(x.r - back) <= 2).length >= 2) return "二鬼拍门";
+            if (kingHelps()) return "白脸将";
+            if (c0.t === "r") {
+                if (horses.length) return "车马合杀";
+                if (cannons.length) return "车炮合杀";
+                if (rooks.length >= 2) return "双车合杀";
+                if (pawns.length) return "车兵合杀";
+                return "单车擒王";
+            }
+            if (rooks.length) return "车兵合杀";
+            if (horses.length) return "马兵合杀";
+            if (cannons.length) return "炮兵合杀";
+            return "兵临城下";
+        }
+        return "";
+    }
+    const XQ = {
+        Game: Game,
+        W: W,
+        H: H,
+        NAMES: NAMES,
+        TYPE_CN: TYPE_CN,
+        other: other,
+        inPalace: inPalace,
+        allLegalMoves: allLegalMoves,
+        inCheck: inCheck,
+        kingsFace: kingsFace,
+        initialBoard: initialBoard,
+        JQ_SQ: JQ_SQ,
+        JQ_STD: JQ_STD,
+        JQ_COUNT: JQ_COUNT,
+        randomLayout: randomLayout,
+        jieqiBoard: jieqiBoard,
+        shuffle: shuffle,
+        rand: rand,
+        et: et,
+        pseudoMoves: pseudoMoves,
+        findKing: findKing,
+        inBoard: inBoard,
+        ownHalf: ownHalf,
+        checkers: checkers,
+        mateName: mateName
+    };
+    if (typeof module !== "undefined" && module.exports) module.exports = XQ;
+    global.XQ = XQ;
+})(typeof window !== "undefined" ? window : globalThis);

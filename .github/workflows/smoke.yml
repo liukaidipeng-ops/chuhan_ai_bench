@@ -1,0 +1,66 @@
+name: Paired AI smoke
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: 'One paired seed (500000 through 500299); capped diagnostic only'
+        default: '500006'
+        required: true
+        type: string
+      resume_run_id:
+        description: 'Optional earlier run from THIS public repository'
+        default: ''
+        required: false
+        type: string
+      resume_attempt:
+        description: 'Exact attempt of the prior run (avoids merging retry artifacts)'
+        default: '1'
+        required: false
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: paired-ai-smoke
+  cancel-in-progress: false
+jobs:
+  smoke:
+    if: github.event.repository.visibility == 'public'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Validate input without shell interpolation
+        env:
+          SEED: ${{ inputs.seed }}
+          RESUME: ${{ inputs.resume_run_id }}
+          ATTEMPT: ${{ inputs.resume_attempt }}
+        run: |
+          node -e "if(!/^500[0-2][0-9]{2}$/.test(process.env.SEED)||!/^([0-9]+)?$/.test(process.env.RESUME)||!/^[1-9][0-9]*$/.test(process.env.ATTEMPT))process.exit(1)"
+      - run: npm run verify && npm test
+      - name: Restore previous pair files from the same repository
+        if: inputs.resume_run_id != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.resume_run_id }}
+          name: paired-smoke-${{ inputs.resume_run_id }}-${{ inputs.resume_attempt }}
+          path: results
+      - name: Run or resume one pair
+        env:
+          SEED: ${{ inputs.seed }}
+        run: node tools/pairs.js --seeds "$SEED" --out results
+      - name: Preserve completed pairs even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: paired-smoke-${{ github.run_id }}-${{ github.run_attempt }}
+          path: results/
+          retention-days: 1
+          if-no-files-found: warn
