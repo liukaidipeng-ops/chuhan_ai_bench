@@ -687,7 +687,7 @@ function parseArgs(argv) {
         level: "mid",
         red: null,
         black: null,
-        budget: 600,
+        budget: null,
         jobs: os.cpus().length,
         maxRounds: 150,
         open: 6,
@@ -706,7 +706,7 @@ function parseArgs(argv) {
     };
     for (let i = 0; i < argv.length; i++) {
         const k = argv[i], v = () => argv[++i];
-        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
+        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
             const m = t.trim().match(/^(mv|up):(\d),(\d)(?:>(\d),(\d))?$/);
             if (!m) throw new Error("--open-seq 看不懂：" + t);
             return m[1] === "up" ? {
@@ -723,7 +723,13 @@ function parseArgs(argv) {
             if (!o.seedlist.length || o.seedlist.some(x => !Number.isInteger(x))) throw new Error("--seedlist 要写成逗号分隔的整数种子，现在是：" + raw);
         } else if (k === "--stop-after-revive") o.stopAfterRevive = true; else if (k === "--ai") o.ai = v(); else if (k === "--ai-r") o.aiR = v(); else if (k === "--ai-b") o.aiB = v(); else if (k === "--match") o.match = v().split(","); else if (k === "--sprt") o.sprt = v().split(",").map(Number); else if (k === "--fixed") o.fixed = true; else if (k === "--nodes") o.nodes = v(); else if (k === "--worker") o.worker = true; else if (k === "--merge") o.merge = v().split(",").filter(Boolean); else throw new Error("未知参数 " + k);
     }
+    if (o.budget != null && (!Number.isFinite(o.budget) || o.budget <= 0)) throw Error("--budget must be positive");
+    if (o.matchLevels && (!o.match || o.matchLevels.length !== 2 || o.matchLevels.some(x => !["easy", "mid", "hard", "xhard"].includes(x)) || o.red || o.black)) throw Error("--match-levels requires two valid A,B levels and --match; do not combine with --red/--black");
     return o;
+}
+
+function matchLevels(o, flip) {
+    return o.matchLevels ? {red:o.matchLevels[flip ? 1 : 0], black:o.matchLevels[flip ? 0 : 1]} : {red:o.red || o.level, black:o.black || o.level};
 }
 
 function setPath(obj, p, val) {
@@ -840,6 +846,8 @@ function worker() {
         });
         const R = {
             seed: job.seed,
+            levels: {...lvl},
+            effectiveLevels: {r: {...AIS.r.LEVELS[lvl.r]}, b: {...AIS.b.LEVELS[lvl.b]}},
             decisions: [],
             flip: !!job.flip,
             winner: null,
@@ -1053,7 +1061,7 @@ function worker() {
                 m: matDiff(g.S)
             } : null;
             if (g.status && g.status.mustPass) {
-                R.decisions.push({ply:R.plies,side,phase:"forced-pass",ai:null,ms:0,nodes:0,depth:0,actions:[{k:"pass"}]});
+                R.decisions.push({ply:R.plies,side,phase:"forced-pass",ai:null,startedAt:Date.now(),endedAt:Date.now(),ms:0,nodes:0,depth:0,actions:[{k:"pass"}]});
                 const info = g.apply({
                     k: "pass"
                 });
@@ -1079,7 +1087,7 @@ function worker() {
             R.ms += dt;
             if (dt > R.msMax) R.msMax = dt;
             const st = OPENSEQ && R.plies < OPENSEQ.length ? null : AI.think.last;
-            R.decisions.push({ply:R.plies,side,phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
+            R.decisions.push({ply:R.plies,side,phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],level:L,levelConfig:{...AI.LEVELS[L]},startedAt:t0,endedAt:t0+dt,ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
             if (st && st.nodes != null) {
                 R.nodes = (R.nodes || 0) + st.nodes;
                 R.nodeMoves = (R.nodeMoves || 0) + 1;
@@ -1220,7 +1228,7 @@ function worker() {
                 if (parseNodes(m.nodes) && !/nodeCap|\bL\.nodes\b/.test(require("fs").readFileSync(path.resolve(__dirname, "..", spec.file), "utf8"))) warns.push(`${spec.label} 不支持按节点数收手（--nodes 对它无效），它按时间算：结果和机器快慢有关，不能精确复现。和上一版比请用 git:25eb911 或更新的版本`);
             }
             for (const X of new Set(Object.values(AIMAP))) {
-                X.LEVELS.hard.budget = m.budget;
+                if (m.budget != null) X.LEVELS.hard.budget = m.budget;
                 applyNodes(X.LEVELS, parseNodes(m.nodes), {
                     open: "mid"
                 });
@@ -1321,8 +1329,7 @@ async function run(o) {
             flip: flip,
             aiR: flip ? "B" : "A",
             aiB: flip ? "A" : "B",
-            red: o.red || o.level,
-            black: o.black || o.level,
+            ...matchLevels(o, flip),
             maxRounds: o.maxRounds,
             open: o.open,
             saveUlt: o.saveUlt,
@@ -1915,6 +1922,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+    parseArgs, matchLevels,
     PRESETS: PRESETS,
     summarize: summarize,
     applyPatches: applyPatches,

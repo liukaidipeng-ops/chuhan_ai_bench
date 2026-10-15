@@ -15,7 +15,7 @@
     "ai/candidate.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
     "ai/baseline.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
     "ai/opening.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
-    "tools/bfsim.js": "c2af52ca70742febd260e2fce3eaef942365b640fe2aaafba6c6f97e1972f380",
+    "tools/bfsim.js": "32154b5972d4ac6b1aabbdebfe473bb5fa42c94fbdbde04064541300e15ae947",
     "tools/pairs.js": "a1918fdbe9aebb87e3117ff5c2bfcf88448f50cc6842befefa63ac4403d2a9c8",
     "tools/replay.js": "dd282c1cca3cc3a6b0cd81dcb6573dc223dee4e392fac21ddff7acfbeaa2b9da"
   },

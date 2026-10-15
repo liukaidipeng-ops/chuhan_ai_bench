@@ -62,5 +62,5 @@ jobs:
         with:
           name: paired-smoke-${{ github.run_id }}-${{ github.run_attempt }}
           path: results/
-          retention-days: 1
+          retention-days: 7
           if-no-files-found: warn
