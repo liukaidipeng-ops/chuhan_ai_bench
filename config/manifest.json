@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "rulesBaseline": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
-  "candidate": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
+  "candidate": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
   "baseline": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
   "simulatorSource": "ecdb26ec9029563a06a393423b923cc89ff65468",
   "openingBase": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
@@ -12,7 +12,7 @@
   "files": {
     "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
     "src/bingfa.js": "56ae1087e8606de72c06ec6372332223f75126064fae8dcbc3687cbf4893039e",
-    "ai/candidate.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
+    "ai/candidate.js": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
     "ai/baseline.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
     "ai/opening.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
     "tools/bfsim.js": "32154b5972d4ac6b1aabbdebfe473bb5fa42c94fbdbde04064541300e15ae947",
@@ -25,5 +25,6 @@
     "source/src/bingfa.js": "be0c398bf85adbaa065d9952f216ba3b03551167",
     "source/src/bfai.js": "bc4e63136c141ecb03fad989de32af275c7820a7"
   },
-  "historicalDataCompatible": false
+  "historicalDataCompatible": false,
+  "candidateSourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3"
 }
