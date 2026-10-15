@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "approved": false,
+  "evidenceVerified": false,
+  "oldRunId": 38722944424,
+  "oldCommit": "c14e3b3bb869738709a490ec9717d75fb1b23860",
+  "completedIndices": [],
+  "remainingIndices": [],
+  "preservedEvidence": [],
+  "maxParallel": 16,
+  "note": "Unarmed preparation only. Refresh after cancellation settles and verify every successful pair before launch. Do not repeat successful seeds."
+}

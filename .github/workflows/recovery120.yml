@@ -1,0 +1,71 @@
+name: Resume unfinished 120 pairs with 16 standard runners
+on:
+  push:
+    branches: [bench/recovery120-16]
+    paths: [config/recovery120-launch.json]
+permissions:
+  contents: read
+concurrency:
+  group: formal120-recovery
+  cancel-in-progress: false
+jobs:
+  gate:
+    if: github.event.repository.visibility == 'public' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      pairs: ${{ steps.gate.outputs.pairs }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify one-time launch and unchanged experiment
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if git cat-file -e "$BEFORE:config/recovery120-launch.json" 2>/dev/null; then
+            echo 'Recovery launch already existed; refusing repeated seeds.'
+            exit 1
+          fi
+          node -e "const fs=require('node:fs'),h=require('./tools/verify').hash,l=require('./config/recovery120-launch.json');require('node:assert/strict').equal(l.planSha256,h(fs.readFileSync('config/recovery120-plan.json')))"
+          npm run verify
+          npm test
+          node tools/formal120.js preflight
+      - name: Require terminal old run and exact preserved-success list
+        id: gate
+        run: node tools/recovery120.js gate config/recovery120-plan.json
+  pair:
+    needs: gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        pair: ${{ fromJSON(needs.gate.outputs.pairs) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Record recovery scheduling separately from frozen game configuration
+        run: |
+          mkdir -p results
+          cp config/recovery120-plan.json results/recovery-scheduler.json
+      - name: Run only an unfinished pair
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: node tools/formal120.js pair "$PAIR_INDEX"
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: recovery-pair-${{ matrix.pair }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: results/
+          retention-days: 7
+          if-no-files-found: warn
