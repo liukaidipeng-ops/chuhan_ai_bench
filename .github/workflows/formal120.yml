@@ -1,0 +1,101 @@
+name: Native hard versus xhard 120
+on:
+  push:
+    branches: [bench/formal120-55919]
+    paths: [config/launch120.json]
+permissions:
+  contents: read
+concurrency:
+  group: formal120-55919
+  cancel-in-progress: false
+jobs:
+  smoke:
+    if: github.event.repository.visibility == 'public' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      pairs: ${{ steps.matrix.outputs.pairs }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify launch authorization and frozen sources
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if git cat-file -e "$BEFORE:config/launch120.json" 2>/dev/null; then
+            echo 'Launch file already existed; refusing to repeat this seed set.'
+            exit 1
+          fi
+          node -e "const a=require('./config/launch120.json'),c=require('./config/formal120.json');require('node:assert/strict').equal(a.candidateSha256,c.expectedCandidateSha256);require('node:assert/strict').equal(a.games,120)"
+          npm run verify
+          npm test
+          node tools/formal120.js preflight
+      - name: Smoke native levels and side swap
+        run: node tools/formal120.js smoke
+      - id: matrix
+        run: node -e "require('node:fs').appendFileSync(process.env.GITHUB_OUTPUT,'pairs='+JSON.stringify(Array.from({length:60},(_,i)=>i))+'\n')"
+      - name: Preserve smoke evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: smoke-${{ github.run_id }}-${{ github.run_attempt }}
+          path: results/
+          retention-days: 7
+          if-no-files-found: warn
+  pair:
+    needs: smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        pair: ${{ fromJSON(needs.smoke.outputs.pairs) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Play one native-budget swapped pair
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: node tools/formal120.js pair "$PAIR_INDEX"
+      - name: Preserve pair and partial evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pair-${{ matrix.pair }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: results/
+          retention-days: 7
+          if-no-files-found: warn
+  summary:
+    needs: [smoke, pair]
+    if: always() && needs.smoke.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: pair-*
+          path: collected
+          merge-multiple: true
+      - run: node tools/formal120-summary.js collected
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: summary-${{ github.run_id }}-${{ github.run_attempt }}
+          path: formal120-summary.json
+          retention-days: 7

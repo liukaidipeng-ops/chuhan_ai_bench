@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "expectedCandidateSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
+  "requiredCandidatePrefix": "55919a98",
+  "games": 120,
+  "pairs": 60,
+  "seedStart": 610150000,
+  "smokeSeed": 610149999,
+  "levels": [
+    "hard",
+    "xhard"
+  ],
+  "nativeLevels": {
+    "hard": {
+      "budget": 3000,
+      "minNodes": 20000
+    },
+    "xhard": {
+      "budget": 9000,
+      "minNodes": 60000
+    }
+  },
+  "maxRounds": 150,
+  "pairTimeoutSeconds": 4800,
+  "maxParallel": 4,
+  "runner": "ubuntu-24.04",
+  "retentionDays": 7
+}

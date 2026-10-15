@@ -706,7 +706,7 @@ function parseArgs(argv) {
     };
     for (let i = 0; i < argv.length; i++) {
         const k = argv[i], v = () => argv[++i];
-        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
+        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--journal") o.journal = v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
             const m = t.trim().match(/^(mv|up):(\d),(\d)(?:>(\d),(\d))?$/);
             if (!m) throw new Error("--open-seq 看不懂：" + t);
             return m[1] === "up" ? {
@@ -801,6 +801,7 @@ function worker() {
     const BF = global.BF = require(path.join(SRC, "bingfa.js"));
     let AIMAP = null;
     let OPENSEQ = null;
+    let journal = null;
     let ov = null;
     const inc = (o, k, n = 1) => {
         o[k] = (o[k] || 0) + n;
@@ -820,6 +821,10 @@ function worker() {
         return m;
     };
     async function play(job) {
+        const emit = event => {
+            if (journal) require("fs").appendFileSync(path.join(journal, `game-${job.seed}-${job.flip ? 1 : 0}.jsonl`), JSON.stringify({seed:job.seed,flip:!!job.flip,at:Date.now(),...event})+"\n");
+        };
+        emit({type:"start",job});
         Math.random = mulberry32(job.seed * 2654435761);
         const lvl = {
             r: job.red,
@@ -1062,6 +1067,7 @@ function worker() {
             } : null;
             if (g.status && g.status.mustPass) {
                 R.decisions.push({ply:R.plies,side,phase:"forced-pass",ai:null,startedAt:Date.now(),endedAt:Date.now(),ms:0,nodes:0,depth:0,actions:[{k:"pass"}]});
+                emit({type:"decision",decision:R.decisions.at(-1)});
                 const info = g.apply({
                     k: "pass"
                 });
@@ -1082,12 +1088,14 @@ function worker() {
                 if (left && g.merit[side] >= U.cost - 7) L += "Save";
             }
             const AI = R.plies < job.open && AIMAP.O ? AIMAP.O : AIS[side];
+            emit({type:"thinking",ply:R.plies,side,level:L,levelConfig:{...AI.LEVELS[L]}});
             const seq = OPENSEQ && R.plies < OPENSEQ.length ? JSON.parse(JSON.stringify(OPENSEQ[R.plies])) : await AI.think(BF.cloneState(g.S), L);
             const dt = Date.now() - t0;
             R.ms += dt;
             if (dt > R.msMax) R.msMax = dt;
             const st = OPENSEQ && R.plies < OPENSEQ.length ? null : AI.think.last;
             R.decisions.push({ply:R.plies,side,phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],level:L,levelConfig:{...AI.LEVELS[L]},startedAt:t0,endedAt:t0+dt,ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
+            emit({type:"decision",decision:R.decisions.at(-1)});
             if (st && st.nodes != null) {
                 R.nodes = (R.nodes || 0) + st.nodes;
                 R.nodeMoves = (R.nodeMoves || 0) + 1;
@@ -1192,11 +1200,14 @@ function worker() {
         R.endMat = material(g.S);
         R.finalState = BF.cloneState(g.S);
         if (POS) R.pos = POS;
+        emit({type:"end",result:R});
         return R;
     }
     process.on("message", async m => {
         if (m.init) try {
             ov = m.init;
+            journal = m.journal;
+            if (journal) require("fs").mkdirSync(journal,{recursive:true});
             for (const [k, v] of Object.entries(ov.set)) setPath(BF.CFG, k, v);
             applyPatches(BF, ov.patches);
             const warns = [];
@@ -1413,6 +1424,7 @@ async function run(o) {
             c.send({
                 init: ov,
                 budget: o.budget,
+                journal: o.journal,
                 ais: ais,
                 nodes: o.nodes,
                 openNodes: o.openNodes,
