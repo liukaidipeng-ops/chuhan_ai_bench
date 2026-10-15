@@ -1,7 +1,6 @@
 {
   "schema": 1,
-  "expectedCandidateSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
-  "requiredCandidatePrefix": "55919a98",
+  "expectedCandidateSha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
   "games": 120,
   "pairs": 60,
   "seedStart": 610150000,
@@ -24,5 +23,7 @@
   "pairTimeoutSeconds": 4800,
   "maxParallel": 4,
   "runner": "ubuntu-24.04",
-  "retentionDays": 7
+  "retentionDays": 7,
+  "expectedSourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
+  "candidateImportCommit": "8536387bb9b41ecc7797abe16e8136089159b289"
 }

@@ -460,6 +460,12 @@
     let upPly = -1;
     let upAll = false;
     const upAt = (S, ply) => (ply === upPly || upAll && ply === 3 && upPly >= 0) && !S.upgraded;
+    let rootCnt = null, rootMerit = 0, incomeUpN = 0;
+    const incomeUpAt = (S, ply) => {
+        if (ply !== 2 || S.upgraded || S.turn !== kdMe || !rootCnt || S.cnt.b <= rootCnt.b || S.merit[S.turn] <= rootMerit) return false;
+        const M = CFG.merit, rd = Math.floor((S.cnt.r + S.cnt.b) / 2) + 1;
+        return rd >= M.autoIncomeFromRound;
+    };
     let pfPly = -1;
     const pfCache = new Map;
     const upCache = new Map;
@@ -474,11 +480,12 @@
         for (let r = 0; r < 10; r++) for (let f = 0; f < 9; f++) {
             const p = S.board[r][f];
             if (!p || p.s !== side || p.t === "k") continue;
-            const T = A.upgradeState(S, [ f, r ]);
+            const cost = A.upCost(p), T = A.upgradeState(S, [ f, r ]);
             if (T) ups.push({
                 S: T,
                 g: score(T, side) - base,
-                id: p.id
+                id: p.id,
+                cost: cost
             });
         }
         ups.sort((x, y) => y.g - x.g);
@@ -645,7 +652,8 @@
             if (inChk && ply < 8) depth = 1; else return qs(S, alpha, beta, ply, 0);
         }
         if (fewPieces(S) && stuck(S)) return -WIN + ply;
-        const tkey = fp(S) + ":" + depth + ":" + ext + ":" + (upAt(S, ply) ? 1 : 0) + (ply === pfPly ? 2 : 0), tte = TTB.get(tkey), a0 = alpha;
+        const ownIncomeUp = incomeUpAt(S, ply);
+        const tkey = fp(S) + ":" + depth + ":" + ext + ":" + (upAt(S, ply) ? 1 : 0) + (ply === pfPly ? 2 : 0) + (ownIncomeUp ? 4 : 0), tte = TTB.get(tkey), a0 = alpha;
         if (tte) {
             const v = fromTT(tte.v, ply);
             if (tte.f === 0 || tte.f === 1 && v >= beta || tte.f === 2 && v <= alpha) return v;
@@ -670,8 +678,9 @@
             }
         }
         let best = -INF, legal = 0, bm = null;
-        if (upAt(S, ply)) {
-            const ups = upsOf(S, side);
+        if (upAt(S, ply) || ownIncomeUp) {
+            const ups = ownIncomeUp ? upsOf(S, side).filter(u => u.cost > rootMerit && u.cost <= S.merit[side]) : upsOf(S, side);
+            if (ownIncomeUp) incomeUpN += ups.length;
             for (const u of ups) {
                 const v = ab(u.S, depth - extd, alpha, beta, ply, ext - extd);
                 if (v > best) {
@@ -854,6 +863,14 @@
         if (S.upgraded) return [];
         const me = S.turn, U = CFG.ultimates, fin = !!S.final;
         const base = score(S, me), chk = A.inCheck(S, me), cand = [], skipped = [];
+        let overflow = 0;
+        if (me === "b") {
+            const M = CFG.merit, rd = Math.floor((S.cnt.r + S.cnt.b + 1) / 2) + 1;
+            if (rd >= M.autoIncomeFromRound) {
+                const per = M.phase3FromRound && rd >= M.phase3FromRound ? M.phase3PerRound : M.autoIncomePerRound;
+                overflow = Math.max(0, S.merit[me] + per - M.cap);
+            }
+        }
         let heavy = false;
         for (let r = 0; r < 10; r++) for (let f = 0; f < 9; f++) {
             const p = S.board[r][f];
@@ -870,6 +887,7 @@
         for (let r = 0; r < 10; r++) for (let f = 0; f < 9; f++) {
             const p = S.board[r][f];
             if (!p || p.s !== me || p.t === "k") continue;
+            const cost = A.upCost(p), refund = overflow > 0 && cost != null && cost <= overflow ? cost : 0;
             const T = A.upgradeState(S, [ f, r ]);
             if (!T) continue;
             const thr = p.t !== "p" && threatened(S, [ f, r ]), must = thr || chk && p.t !== "e" && p.t !== "p";
@@ -882,7 +900,8 @@
                     S: T,
                     gain: score(T, me) - base,
                     must: must,
-                    unlock: unlock
+                    unlock: unlock,
+                    refund: refund
                 });
                 continue;
             }
@@ -891,7 +910,8 @@
                 S: T,
                 gain: score(T, me) - base,
                 must: must,
-                unlock: unlock
+                unlock: unlock,
+                refund: refund
             });
         }
         cand.sort((x, y) => (y.must ? 1 : 0) - (x.must ? 1 : 0) || y.gain - x.gain);
@@ -944,6 +964,10 @@
                     added++;
                 }
             }
+        }
+        {
+            const ex = skipped.concat(cand).filter(c => c.refund && !top.includes(c)).sort((x, y) => y.gain - x.gain)[0];
+            if (ex) top.push(ex);
         }
         return top;
     }
@@ -1081,6 +1105,11 @@
         };
         lmrOn = L.depth > 3;
         kdMe = S0.turn;
+        rootCnt = {
+            ...S0.cnt
+        };
+        rootMerit = S0.merit[me];
+        incomeUpN = 0;
         nodes = 0;
         qMax = L.q;
         hist.clear();
@@ -1106,7 +1135,8 @@
         if (TR) TR.ups = ups.map(c => ({
             at: c.at,
             gain: +c.gain.toFixed(2),
-            must: !!c.must
+            must: !!c.must,
+            refund: c.refund || 0
         }));
         if (L.depth < 2) {
             const c = Math.random() <= L.up ? ups.find(x => x.must || x.gain > .25) : null;
@@ -1535,6 +1565,7 @@
                 nodes: nodes,
                 depth: depthDone,
                 why: L.fixedDepth ? "fixed" : why,
+                incomeUpN: incomeUpN,
                 seq: JSON.parse(JSON.stringify(seq))
             });
             think.last.trace = TR;

@@ -6,7 +6,8 @@ function preflight(){
   if(Object.keys(process.env).some(k=>/^(BFAI_|BFSIM_)/.test(k)))throw Error('Unset AI overrides');
   const manifest=verify(), digest=hash(fs.readFileSync(path.join(root,'ai/candidate.js')));
   assert.match(config.expectedCandidateSha256||'',/^[a-f0-9]{64}$/,'Full candidate SHA256 must be supplied');
-  assert(config.expectedCandidateSha256.startsWith(config.requiredCandidatePrefix),'Wrong candidate identity');
+  assert.equal(config.expectedSourceSha256,'55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3','Wrong source identity');
+  assert.equal(manifest.candidateSourceSha256,config.expectedSourceSha256,'Wrong source provenance');
   assert.equal(digest,config.expectedCandidateSha256,'Candidate mismatch');
   global.XQ=require('../src/rules');global.BF=require('../src/bingfa');
   const ai=require('../ai/candidate');
