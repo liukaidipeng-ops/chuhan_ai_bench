@@ -1,0 +1,16 @@
+pool,metric,count,games_involved,unit,notes
+completed_120,games,120,120,games,60 seeds; two colors each; hard versus xhard
+completed_120,decisions,9531,120,decisions,fully replayed; terminal states matched
+completed_120,han_decisions,4798,,decisions,
+completed_120,chu_decisions,4733,,decisions,9531 minus 4798
+completed_120,han_merit_at_least_20,36,11,decisions,preparation-before
+completed_120,han_near_chu_general_at_least_3,15,7,decisions,merit 2 to 14 when position condition met
+completed_120,simian_legal_before,0,0,decisions,
+completed_120,simian_legal_after,0,0,decisions,
+completed_120,simian_casts,0,0,casts,
+completed_120,hongmen_legal_before,26,8,decisions,hard 11; xhard 15
+completed_120,hongmen_legal_after,20,4,decisions,hard 8; xhard 12
+completed_120,hongmen_casts,3,3,casts,hard 2; xhard 1; no causal win attribution
+completed_120,han_wins,65,,games,hard 28; xhard 37
+completed_120,chu_wins,55,,games,hard 23; xhard 32
+completed_120,draws,0,,games,

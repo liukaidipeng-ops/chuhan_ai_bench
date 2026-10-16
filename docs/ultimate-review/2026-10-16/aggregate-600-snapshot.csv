@@ -1,0 +1,6 @@
+pool,snapshot_utc,metric,count,unit,notes
+ongoing_600_snapshot,2026-10-16T10:47:00Z,completed_pairs,51,pairs,historical snapshot; not final
+ongoing_600_snapshot,2026-10-16T10:47:00Z,completed_games,102,games,completion-order selection bias; not pooled with 120
+ongoing_600_snapshot,2026-10-16T10:47:00Z,simian_casts,0,casts,actual actions only; opportunity windows not replayed
+ongoing_600_snapshot,2026-10-16T10:47:00Z,hongmen_casts,7,casts,candidate as Chu 6; baseline as Chu 1; both xhard
+ongoing_600_snapshot,2026-10-16T10:47:00Z,chu_wins_in_hongmen_cast_games,7,games,no causal win attribution
