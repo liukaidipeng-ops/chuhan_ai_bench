@@ -20,6 +20,7 @@
     const PFK = ENV.BFAI_PFK != null ? +ENV.BFAI_PFK : 1;
     const PFG = ENV.BFAI_PFG != null ? +ENV.BFAI_PFG : 0;
     const UPK = ENV.BFAI_UPK != null ? +ENV.BFAI_UPK : 4;
+    const ROOT_RR = +(ENV.BFAI_ROOT_RR || 0);
     const bsOn = () => CFG.beishui && CFG.beishui.on ? CFG.beishui : null;
     const BSMIN = ENV.BFAI_BSMIN != null ? +ENV.BFAI_BSMIN : 1;
     const BSV = ENV.BFAI_BSV != null ? +ENV.BFAI_BSV : 3;
@@ -1304,6 +1305,23 @@
                     break;
                 }
                 deadline = Math.min(hardEnd, d < 3 ? Infinity : d === 3 ? t0 + L.budget * 2 : thin ? t0 + L.budget * 1.5 : soft + L.budget * .3);
+            }
+            if (ROOT_RR && d >= 2) {
+                const groups = new Map, order = [];
+                for (const k of kids) {
+                    const key = k.up ? k.up.at.join(",") : "";
+                    if (!groups.has(key)) {
+                        groups.set(key, []);
+                        order.push(key);
+                    }
+                    groups.get(key).push(k);
+                }
+                const rr = [];
+                for (let i = 0; rr.length < kids.length; i++) for (const key of order) {
+                    const q = groups.get(key);
+                    if (i < q.length) rr.push(q[i]);
+                }
+                kids = rr;
             }
             let alpha = -INF, n = 0, cut = false;
             const M = L.noise * 1.6 + .02;
