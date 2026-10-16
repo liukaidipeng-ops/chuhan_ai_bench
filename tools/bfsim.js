@@ -706,7 +706,7 @@ function parseArgs(argv) {
     };
     for (let i = 0; i < argv.length; i++) {
         const k = argv[i], v = () => argv[++i];
-        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--journal") o.journal = v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
+        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--trace") o.trace = true; else if (k === "--match-one") o.matchOne = +v(); else if (k === "--journal") o.journal = v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
             const m = t.trim().match(/^(mv|up):(\d),(\d)(?:>(\d),(\d))?$/);
             if (!m) throw new Error("--open-seq 看不懂：" + t);
             return m[1] === "up" ? {
@@ -723,6 +723,7 @@ function parseArgs(argv) {
             if (!o.seedlist.length || o.seedlist.some(x => !Number.isInteger(x))) throw new Error("--seedlist 要写成逗号分隔的整数种子，现在是：" + raw);
         } else if (k === "--stop-after-revive") o.stopAfterRevive = true; else if (k === "--ai") o.ai = v(); else if (k === "--ai-r") o.aiR = v(); else if (k === "--ai-b") o.aiB = v(); else if (k === "--match") o.match = v().split(","); else if (k === "--sprt") o.sprt = v().split(",").map(Number); else if (k === "--fixed") o.fixed = true; else if (k === "--nodes") o.nodes = v(); else if (k === "--worker") o.worker = true; else if (k === "--merge") o.merge = v().split(",").filter(Boolean); else throw new Error("未知参数 " + k);
     }
+    if (o.matchOne != null && (!o.match || o.games !== 2 || ![0,1].includes(o.matchOne))) throw Error("--match-one requires --match --games 2 and side 0 or 1");
     if (o.budget != null && (!Number.isFinite(o.budget) || o.budget <= 0)) throw Error("--budget must be positive");
     if (o.matchLevels && (!o.match || o.matchLevels.length !== 2 || o.matchLevels.some(x => !["easy", "mid", "hard", "xhard"].includes(x)) || o.red || o.black)) throw Error("--match-levels requires two valid A,B levels and --match; do not combine with --red/--black");
     return o;
@@ -1066,7 +1067,7 @@ function worker() {
                 m: matDiff(g.S)
             } : null;
             if (g.status && g.status.mustPass) {
-                R.decisions.push({ply:R.plies,side,phase:"forced-pass",ai:null,startedAt:Date.now(),endedAt:Date.now(),ms:0,nodes:0,depth:0,actions:[{k:"pass"}]});
+                R.decisions.push({ply:R.plies,side,phase:"forced-pass",stopReason:"forced-pass",ai:null,startedAt:Date.now(),endedAt:Date.now(),ms:0,nodes:0,depth:0,actions:[{k:"pass"}]});
                 emit({type:"decision",decision:R.decisions.at(-1)});
                 const info = g.apply({
                     k: "pass"
@@ -1094,7 +1095,9 @@ function worker() {
             R.ms += dt;
             if (dt > R.msMax) R.msMax = dt;
             const st = OPENSEQ && R.plies < OPENSEQ.length ? null : AI.think.last;
-            R.decisions.push({ply:R.plies,side,phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],level:L,levelConfig:{...AI.LEVELS[L]},startedAt:t0,endedAt:t0+dt,ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
+            const thinking = st ? JSON.parse(JSON.stringify(st)) : null;
+            if (AI.trace && (!thinking?.trace || typeof thinking.trace.why !== "string")) throw Error("Missing native AI trace/stop reason");
+            R.decisions.push({ply:R.plies,side,thinking,stopReason:thinking?.trace?.why??(OPENSEQ && R.plies < OPENSEQ.length ? "supplied-opening" : null),phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],level:L,levelConfig:{...AI.LEVELS[L]},startedAt:t0,endedAt:t0+dt,ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
             emit({type:"decision",decision:R.decisions.at(-1)});
             if (st && st.nodes != null) {
                 R.nodes = (R.nodes || 0) + st.nodes;
@@ -1235,6 +1238,7 @@ function worker() {
             OPENSEQ = m.openSeq || null;
             for (const [k, spec] of Object.entries(m.ais)) {
                 const X = AIMAP[k] = load(spec);
+                if (m.trace) X.trace = true;
                 if (BF.ai.version != null && X.apiVersion != null && X.apiVersion !== BF.ai.version) warns.push(`${spec.label} 按接口第 ${X.apiVersion} 版写的，当前引擎是第 ${BF.ai.version} 版`);
                 if (parseNodes(m.nodes) && !/nodeCap|\bL\.nodes\b/.test(require("fs").readFileSync(path.resolve(__dirname, "..", spec.file), "utf8"))) warns.push(`${spec.label} 不支持按节点数收手（--nodes 对它无效），它按时间算：结果和机器快慢有关，不能精确复现。和上一版比请用 git:25eb911 或更新的版本`);
             }
@@ -1283,7 +1287,7 @@ function worker() {
 }
 
 function resolveAI(spec) {
-    if (![ "ai/candidate.js", "ai/baseline.js", "ai/opening.js" ].includes(spec)) throw Error("Only frozen local AI modules are allowed");
+    if (![ "ai/candidate.js", "ai/baseline.js", "ai/opening.js", "ai/root-order-candidate.js" ].includes(spec)) throw Error("Only frozen local AI modules are allowed");
     return {
         file: spec,
         label: spec,
@@ -1335,7 +1339,7 @@ async function run(o) {
             B: resolveAI(o.match[1])
         };
         if (!o.sprt) o.sprt = [ -30, 10 ];
-        for (let i = 0; i < Math.ceil(o.games / 2); i++) for (const flip of [ false, true ]) jobs.push({
+        for (let i = 0; i < Math.ceil(o.games / 2); i++) for (const flip of (o.matchOne == null ? [ false, true ] : [!!o.matchOne])) jobs.push({
             seed: o.seed + i,
             flip: flip,
             aiR: flip ? "B" : "A",
@@ -1412,7 +1416,7 @@ async function run(o) {
                         next = jobs.length;
                     }
                 }
-                if (!o.quiet && process.stderr.isTTY) process.stderr.write(`\r${done}/${jobs.length}`); else if (done % 25 === 0 || done === jobs.length) process.stderr.write(`进度 ${done}/${jobs.length}  ${Math.round((Date.now() - t0) / 1e3)}s` + (o.match ? (st => `  新版得分 ${pct(st.score)}  Elo ${st.elo.toFixed(0)}  LLR ${st.llr.toFixed(2)}`)(matchStats(results, o.sprt)) : (w => `  汉 ${w.r} 楚 ${w.b} 和 ${results.length - w.r - w.b}` + (w.r + w.b ? `  汉方胜率 ${pct(w.r / (w.r + w.b))}` : ""))({
+                if (o.trace) process.stderr.write(`Completed ${done}/${jobs.length}; result classification deferred to verified records\n`); else if (!o.quiet && process.stderr.isTTY) process.stderr.write(`\r${done}/${jobs.length}`); else if (done % 25 === 0 || done === jobs.length) process.stderr.write(`进度 ${done}/${jobs.length}  ${Math.round((Date.now() - t0) / 1e3)}s` + (o.match ? (st => `  新版得分 ${pct(st.score)}  Elo ${st.elo.toFixed(0)}  LLR ${st.llr.toFixed(2)}`)(matchStats(results, o.sprt)) : (w => `  汉 ${w.r} 楚 ${w.b} 和 ${results.length - w.r - w.b}` + (w.r + w.b ? `  汉方胜率 ${pct(w.r / (w.r + w.b))}` : ""))({
                     r: results.filter(r => r.winner === "r").length,
                     b: results.filter(r => r.winner === "b").length
                 })) + "\n");
@@ -1425,6 +1429,7 @@ async function run(o) {
                 init: ov,
                 budget: o.budget,
                 journal: o.journal,
+                trace: !!o.trace,
                 ais: ais,
                 nodes: o.nodes,
                 openNodes: o.openNodes,
@@ -1440,6 +1445,10 @@ async function run(o) {
         results: results,
         errors: errors
     }, null, 1));
+    if (o.trace && o.match) {
+        console.log(JSON.stringify({games:results.length,errors:errors.length,unresolved:results.filter(r=>["cap","stuck","probe"].includes(r.reason)).length,note:"Trace experiment: truncated games are unresolved, not draws; use verified paired analysis."}));
+        return;
+    }
     if (o.match) {
         const st = matchStats(results, o.sprt), f = x => (x >= 0 ? "+" : "") + x.toFixed(0);
         const nodeMoves = results.reduce((t, r) => t + (r.nodeMoves || 0), 0), nodes = results.reduce((t, r) => t + (r.nodes || 0), 0);

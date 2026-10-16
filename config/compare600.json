@@ -78,5 +78,7 @@
   "stopReasonRequired": true,
   "runnerImplementationVerified": false,
   "retryPolicy": "Only explicit missing/error games; never replay a completed valid game. Incomplete pairs stay unresolved until both games verify.",
-  "formalLaunchEnabled": false
+  "formalLaunchEnabled": false,
+  "runnerComponentTestsVerified": true,
+  "runnerBaselineSmokeEvidenceSha256": "4f9997996d63641306301d12acb9990ecf7d05deabdf7d560ddb4e876ff34fff"
 }

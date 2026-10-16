@@ -15,7 +15,7 @@
     "ai/candidate.js": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
     "ai/baseline.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
     "ai/opening.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
-    "tools/bfsim.js": "62a796921f147928416872332b940c18081b8a6a0906db4e3f40ae702949aac6",
+    "tools/bfsim.js": "69630110daa131229764292acdc8f93211c7b7cd9af41c910405ffc450283a74",
     "tools/pairs.js": "a1918fdbe9aebb87e3117ff5c2bfcf88448f50cc6842befefa63ac4403d2a9c8",
     "tools/replay.js": "dd282c1cca3cc3a6b0cd81dcb6573dc223dee4e392fac21ddff7acfbeaa2b9da",
     "tools/formal120.js": "348e411201ac7efaa1dd0205ce26c8686ab12c1a06a84f976f9984009bc0a7b0",
