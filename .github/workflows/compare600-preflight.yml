@@ -1,0 +1,24 @@
+name: Compare600 preflight only (no games or artifact uploads)
+on:
+  push:
+    branches: [bench/compare600-root-order]
+    paths: [config/compare600-preflight-request.json]
+permissions:
+  contents: read
+concurrency:
+  group: compare600-preflight
+  cancel-in-progress: false
+jobs:
+  preflight:
+    if: github.event.repository.visibility == 'public'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm run verify && npm test
+      - run: node tools/compare600-preflight.js

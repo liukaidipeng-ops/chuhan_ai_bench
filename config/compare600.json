@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "experiment": "root-upgrade-state-rotation-vs-55919-xhard",
+  "status": "blocked-unverified-inputs",
+  "pairs": 300,
+  "games": 600,
+  "seedStart": 610160000,
+  "blocks": [
+    [
+      0,
+      100
+    ],
+    [
+      100,
+      200
+    ],
+    [
+      200,
+      300
+    ]
+  ],
+  "blocksSequential": true,
+  "maxParallel": 16,
+  "runner": "ubuntu-24.04",
+  "level": "xhard",
+  "budgetMs": 9000,
+  "minNodes": 60000,
+  "dynamicMultiplier": 2.7,
+  "nodeCap": null,
+  "maxRounds": 150,
+  "pairTimeoutSeconds": 6000,
+  "jobTimeoutMinutes": 110,
+  "baseline": {
+    "path": "ai/candidate.js",
+    "sourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
+    "fileSha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233"
+  },
+  "candidate": {
+    "path": "ai/root-order-candidate.js",
+    "sourceSha256": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
+    "fileSha256": null,
+    "equivalenceVerified": false
+  },
+  "evidence": {
+    "zipSha256": "a54e28b8f7baec4116ce941d5554ec7eeb99d91eec0c1925f112367cdac3a9ee",
+    "patchSha256": "1d3cd7447def64b832e8a4536708cb913f0a8b6fa0624902f772cfb52ff5fcc1",
+    "reviewed": false,
+    "smallRegressionPassed": false,
+    "experimentCardSha256": null,
+    "gateSummarySha256": null,
+    "equivalenceEvidenceSha256": null,
+    "traceSmokeSha256": null
+  },
+  "rules": {
+    "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
+    "src/bingfa.js": "56ae1087e8606de72c06ec6372332223f75126064fae8dcbc3687cbf4893039e"
+  },
+  "storage": {
+    "verifiedNoCharges": false,
+    "evidenceReference": null,
+    "checkedAt": null,
+    "retentionDays": 7,
+    "cacheEnabled": false,
+    "maximumExperimentBytes": 134217728,
+    "note": "An experiment size cap alone does not establish available account-wide free storage or a zero-charge guarantee. No upload before this gate passes."
+  },
+  "traceRequired": true,
+  "stopReasonRequired": true,
+  "runnerImplementationVerified": false,
+  "retryPolicy": "Only explicit missing/error games; never replay a completed valid game. Incomplete pairs stay unresolved until both games verify.",
+  "formalLaunchEnabled": false
+}
