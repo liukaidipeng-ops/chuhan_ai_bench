@@ -1,0 +1,32 @@
+name: Candidate isolation and zero-artifact log transport smoke
+on:
+  push:
+    branches: [bench/compare600-root-order]
+    paths: [config/compare600-smoke-request.json]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    if: github.event.repository.visibility == 'public' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify sources, tests and free log retention
+        run: |
+          node -e "require('node:assert/strict')(Number(process.env.GITHUB_RETENTION_DAYS)>=7);console.log('LOG_RETENTION_DAYS='+process.env.GITHUB_RETENTION_DAYS)"
+          npm run verify
+          npm test
+      - name: Real candidate trace and isolated environment smoke only
+        run: |
+          mkdir -p results/candidate-smoke
+          timeout --kill-after=5s 240s node tools/bfsim.js --match ai/candidate.js,ai/baseline.js --match-levels xhard,xhard --games 2 --seed 610159902 --open 0 --jobs 1 --max-rounds 1 --fixed --trace --candidate-root-rr --quiet --journal results/candidate-smoke --json results/candidate-smoke/raw.json > results/candidate-smoke/simulator.log 2>&1
+          node tools/candidate-smoke-check.js results/candidate-smoke
+      - name: Preserve complete evidence in free workflow logs
+        if: always()
+        run: node tools/trace-logpack.js encode results/candidate-smoke candidate-smoke

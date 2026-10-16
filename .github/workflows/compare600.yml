@@ -1,0 +1,123 @@
+name: Root-order comparison 300 paired seeds (gated)
+on:
+  push:
+    branches: [bench/compare600-root-order]
+    paths: [config/compare600-launch.json]
+permissions:
+  contents: read
+concurrency:
+  group: compare600-formal
+  cancel-in-progress: false
+jobs:
+  gate:
+    if: github.event.repository.visibility == 'public' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      block0: ${{ steps.plan.outputs.block0 }}
+      block1: ${{ steps.plan.outputs.block1 }}
+      block2: ${{ steps.plan.outputs.block2 }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify first launch, immutable config and all gates
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if git cat-file -e "$BEFORE:config/compare600-launch.json" 2>/dev/null; then exit 1; fi
+          npm run verify
+          npm test
+          node tools/compare600-preflight.js
+      - id: plan
+        run: |
+          node - <<'JS'
+          const fs=require('node:fs'),assert=require('node:assert/strict'),c=require('./config/compare600.json'),l=require('./config/compare600-launch.json'),{hash}=require('./tools/verify');
+          assert.equal(c.formalLaunchEnabled,true);assert.equal(l.configSha256,hash(fs.readFileSync('config/compare600.json')));assert(Number(process.env.GITHUB_RETENTION_DAYS)>=7);assert.equal(c.storage.strategy,'workflow-logs-only');
+          for(let i=0;i<3;i++){const [a,b]=c.blocks[i];fs.appendFileSync(process.env.GITHUB_OUTPUT,'block'+i+'='+JSON.stringify(Array.from({length:b-a},(_,n)=>a+n))+'\n');}
+          JS
+  block0:
+    needs: [gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        pair: ${{ fromJSON(needs.gate.outputs.block0) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Execute one unique paired seed
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: |
+          mkdir -p results/compare600
+          node tools/compare600-runner.js "$PAIR_INDEX" results/compare600
+      - name: Preserve complete and partial traces in free logs
+        if: always()
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: node tools/trace-logpack.js encode results/compare600 "pair-$PAIR_INDEX"
+  block1:
+    needs: [gate, block0]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        pair: ${{ fromJSON(needs.gate.outputs.block1) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Execute one unique paired seed
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: |
+          mkdir -p results/compare600
+          node tools/compare600-runner.js "$PAIR_INDEX" results/compare600
+      - name: Preserve complete and partial traces in free logs
+        if: always()
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: node tools/trace-logpack.js encode results/compare600 "pair-$PAIR_INDEX"
+  block2:
+    needs: [gate, block1]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        pair: ${{ fromJSON(needs.gate.outputs.block2) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Execute one unique paired seed
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: |
+          mkdir -p results/compare600
+          node tools/compare600-runner.js "$PAIR_INDEX" results/compare600
+      - name: Preserve complete and partial traces in free logs
+        if: always()
+        env:
+          PAIR_INDEX: ${{ matrix.pair }}
+        run: node tools/trace-logpack.js encode results/compare600 "pair-$PAIR_INDEX"

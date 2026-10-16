@@ -31,15 +31,21 @@
   "pairTimeoutSeconds": 6000,
   "jobTimeoutMinutes": 110,
   "baseline": {
-    "path": "ai/candidate.js",
+    "path": "ai/baseline.js",
     "sourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
-    "fileSha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233"
+    "fileSha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
+    "requiredEnvironment": {
+      "BFAI_ROOT_RR": "0"
+    }
   },
   "candidate": {
-    "path": "ai/root-order-candidate.js",
+    "path": "ai/candidate.js",
     "sourceSha256": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
-    "fileSha256": null,
-    "equivalenceVerified": false
+    "fileSha256": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+    "equivalenceVerified": false,
+    "requiredEnvironment": {
+      "BFAI_ROOT_RR": "1"
+    }
   },
   "evidence": {
     "zipSha256": "a54e28b8f7baec4116ce941d5554ec7eeb99d91eec0c1925f112367cdac3a9ee",
@@ -49,7 +55,7 @@
     "experimentCardSha256": null,
     "gateSummarySha256": null,
     "equivalenceEvidenceSha256": null,
-    "traceSmokeSha256": null,
+    "traceSmokeSha256": "67247dc3739afc666cba75b58903b1d218bef7e3b8f1b8868c00d0afd57d8734",
     "frozenFilesVerified": false,
     "runtimeFrozenIdentityVerified": false,
     "archiveManifestFullyVerified": false,
@@ -59,7 +65,9 @@
       "reportedActualSha256": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
       "status": "reported-by-independent-review-not-locally-reverified",
       "policy": "Use only independently verified frozen files. Do not waive identity checks or mark whole manifest verified."
-    }
+    },
+    "publicationManifestSha256": "0645f5112210dc077f4defc259379b4b17bd2a4312ff9022204f8b47be00deb6",
+    "publicationEquivalenceAttestationRead": true
   },
   "rules": {
     "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
@@ -72,7 +80,9 @@
     "retentionDays": 7,
     "cacheEnabled": false,
     "maximumExperimentBytes": 134217728,
-    "note": "An experiment size cap alone does not establish available account-wide free storage or a zero-charge guarantee. No upload before this gate passes."
+    "note": "No artifact upload or cache. Official billing docs exclude workflow logs from artifact allowance; require cloud retention>=7 and verified full log roundtrip before declaring this gate passed.",
+    "strategy": "workflow-logs-only",
+    "logRoundTripVerified": false
   },
   "traceRequired": true,
   "stopReasonRequired": true,
@@ -80,5 +90,9 @@
   "retryPolicy": "Only explicit missing/error games; never replay a completed valid game. Incomplete pairs stay unresolved until both games verify.",
   "formalLaunchEnabled": false,
   "runnerComponentTestsVerified": true,
-  "runnerBaselineSmokeEvidenceSha256": "4f9997996d63641306301d12acb9990ecf7d05deabdf7d560ddb4e876ff34fff"
+  "runnerBaselineSmokeEvidenceSha256": "4f9997996d63641306301d12acb9990ecf7d05deabdf7d560ddb4e876ff34fff",
+  "publishedInputCommit": "d5154c1471da42c8e8ee5a2359f046595128a6cf",
+  "rngPolicy": "Per-decision seed = (imul(pairSeed,2654435761)+ply) >>> 0, same seed/ply schedule in both flips; independent AI processes",
+  "candidateEnvironmentIsolationVerified": true,
+  "sequentialBlockLayoutVerified": true
 }

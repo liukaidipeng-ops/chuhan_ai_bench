@@ -706,7 +706,7 @@ function parseArgs(argv) {
     };
     for (let i = 0; i < argv.length; i++) {
         const k = argv[i], v = () => argv[++i];
-        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--trace") o.trace = true; else if (k === "--match-one") o.matchOne = +v(); else if (k === "--journal") o.journal = v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
+        if (k === "--games") o.games = +v(); else if (k === "--level") o.level = v(); else if (k === "--match-levels") o.matchLevels = v().split(","); else if (k === "--red") o.red = v(); else if (k === "--black") o.black = v(); else if (k === "--budget") o.budget = +v(); else if (k === "--candidate-root-rr") o.candidateRootRR = true; else if (k === "--trace") o.trace = true; else if (k === "--match-one") o.matchOne = +v(); else if (k === "--journal") o.journal = v(); else if (k === "--jobs") o.jobs = +v(); else if (k === "--max-rounds") o.maxRounds = +v(); else if (k === "--open") o.open = +v(); else if (k === "--open-ai") o.openAI = v(); else if (k === "--open-nodes") o.openNodes = +v(); else if (k === "--open-seq") o.openSeq = v().split("/").map(ply => ply.split("+").map(t => {
             const m = t.trim().match(/^(mv|up):(\d),(\d)(?:>(\d),(\d))?$/);
             if (!m) throw new Error("--open-seq 看不懂：" + t);
             return m[1] === "up" ? {
@@ -723,6 +723,7 @@ function parseArgs(argv) {
             if (!o.seedlist.length || o.seedlist.some(x => !Number.isInteger(x))) throw new Error("--seedlist 要写成逗号分隔的整数种子，现在是：" + raw);
         } else if (k === "--stop-after-revive") o.stopAfterRevive = true; else if (k === "--ai") o.ai = v(); else if (k === "--ai-r") o.aiR = v(); else if (k === "--ai-b") o.aiB = v(); else if (k === "--match") o.match = v().split(","); else if (k === "--sprt") o.sprt = v().split(",").map(Number); else if (k === "--fixed") o.fixed = true; else if (k === "--nodes") o.nodes = v(); else if (k === "--worker") o.worker = true; else if (k === "--merge") o.merge = v().split(",").filter(Boolean); else throw new Error("未知参数 " + k);
     }
+    if (o.candidateRootRR && (!o.match || o.match.join(",") !== "ai/candidate.js,ai/baseline.js" || o.presets.length || o.sets.length || o.open !== 0 || o.nodes || o.budget != null)) throw Error("Isolated comparison requires exact frozen A/B files, no presets/overrides/opening");
     if (o.matchOne != null && (!o.match || o.games !== 2 || ![0,1].includes(o.matchOne))) throw Error("--match-one requires --match --games 2 and side 0 or 1");
     if (o.budget != null && (!Number.isFinite(o.budget) || o.budget <= 0)) throw Error("--budget must be positive");
     if (o.matchLevels && (!o.match || o.matchLevels.length !== 2 || o.matchLevels.some(x => !["easy", "mid", "hard", "xhard"].includes(x)) || o.red || o.black)) throw Error("--match-levels requires two valid A,B levels and --match; do not combine with --red/--black");
@@ -1090,6 +1091,7 @@ function worker() {
             }
             const AI = R.plies < job.open && AIMAP.O ? AIMAP.O : AIS[side];
             emit({type:"thinking",ply:R.plies,side,level:L,levelConfig:{...AI.LEVELS[L]}});
+            if (AI.identity) AI.rngSeed = (Math.imul(job.seed,2654435761) + R.plies) >>> 0;
             const seq = OPENSEQ && R.plies < OPENSEQ.length ? JSON.parse(JSON.stringify(OPENSEQ[R.plies])) : await AI.think(BF.cloneState(g.S), L);
             const dt = Date.now() - t0;
             R.ms += dt;
@@ -1097,7 +1099,7 @@ function worker() {
             const st = OPENSEQ && R.plies < OPENSEQ.length ? null : AI.think.last;
             const thinking = st ? JSON.parse(JSON.stringify(st)) : null;
             if (AI.trace && (!thinking?.trace || typeof thinking.trace.why !== "string")) throw Error("Missing native AI trace/stop reason");
-            R.decisions.push({ply:R.plies,side,thinking,stopReason:thinking?.trace?.why??(OPENSEQ && R.plies < OPENSEQ.length ? "supplied-opening" : null),phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],level:L,levelConfig:{...AI.LEVELS[L]},startedAt:t0,endedAt:t0+dt,ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
+            R.decisions.push({ply:R.plies,side,thinking,aiIdentity:AI.identity||null,rngSeed:AI.identity?AI.rngSeed:null,stopReason:thinking?.trace?.why??(OPENSEQ && R.plies < OPENSEQ.length ? "supplied-opening" : null),phase:R.plies<job.open?"opening":"search",ai:R.plies<job.open?"opening":job[side==="r"?"aiR":"aiB"],level:L,levelConfig:{...AI.LEVELS[L]},startedAt:t0,endedAt:t0+dt,ms:dt,nodes:st?.nodes??null,depth:st?.depth??null,actions:JSON.parse(JSON.stringify(seq))});
             emit({type:"decision",decision:R.decisions.at(-1)});
             if (st && st.nodes != null) {
                 R.nodes = (R.nodes || 0) + st.nodes;
@@ -1237,7 +1239,7 @@ function worker() {
             AIMAP = {};
             OPENSEQ = m.openSeq || null;
             for (const [k, spec] of Object.entries(m.ais)) {
-                const X = AIMAP[k] = load(spec);
+                const X = AIMAP[k] = m.candidateRootRR ? await require("./isolated-ai").create(spec.file,k === "A" ? 1 : 0) : load(spec);
                 if (m.trace) X.trace = true;
                 if (BF.ai.version != null && X.apiVersion != null && X.apiVersion !== BF.ai.version) warns.push(`${spec.label} 按接口第 ${X.apiVersion} 版写的，当前引擎是第 ${BF.ai.version} 版`);
                 if (parseNodes(m.nodes) && !/nodeCap|\bL\.nodes\b/.test(require("fs").readFileSync(path.resolve(__dirname, "..", spec.file), "utf8"))) warns.push(`${spec.label} 不支持按节点数收手（--nodes 对它无效），它按时间算：结果和机器快慢有关，不能精确复现。和上一版比请用 git:25eb911 或更新的版本`);
@@ -1430,6 +1432,7 @@ async function run(o) {
                 budget: o.budget,
                 journal: o.journal,
                 trace: !!o.trace,
+                candidateRootRR: !!o.candidateRootRR,
                 ais: ais,
                 nodes: o.nodes,
                 openNodes: o.openNodes,

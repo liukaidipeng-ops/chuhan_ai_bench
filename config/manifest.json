@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "rulesBaseline": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
-  "candidate": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
-  "baseline": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
+  "candidate": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
+  "baseline": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
   "simulatorSource": "ecdb26ec9029563a06a393423b923cc89ff65468",
   "openingBase": "e5c430b084e4e157d5de12c5623ad862c866b3c5",
   "longCheckLimit": 3,
@@ -12,14 +12,15 @@
   "files": {
     "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
     "src/bingfa.js": "56ae1087e8606de72c06ec6372332223f75126064fae8dcbc3687cbf4893039e",
-    "ai/candidate.js": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
-    "ai/baseline.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
+    "ai/candidate.js": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+    "ai/baseline.js": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
     "ai/opening.js": "57f5151aa63a5f90d7be454d7e2f36db0f20fe4577b025f58487a0476e95ec7b",
-    "tools/bfsim.js": "69630110daa131229764292acdc8f93211c7b7cd9af41c910405ffc450283a74",
+    "tools/bfsim.js": "b5678d973f7b2c919711436e3715a6d457598c40582a9d2b7b7a3b4da23b4e56",
     "tools/pairs.js": "a1918fdbe9aebb87e3117ff5c2bfcf88448f50cc6842befefa63ac4403d2a9c8",
     "tools/replay.js": "dd282c1cca3cc3a6b0cd81dcb6573dc223dee4e392fac21ddff7acfbeaa2b9da",
     "tools/formal120.js": "348e411201ac7efaa1dd0205ce26c8686ab12c1a06a84f976f9984009bc0a7b0",
-    "tools/formal120-summary.js": "bfb582eebfb35e752a61ed73a2cd27dad76e9657a3f93a10b9450146c1473ddf"
+    "tools/formal120-summary.js": "bfb582eebfb35e752a61ed73a2cd27dad76e9657a3f93a10b9450146c1473ddf",
+    "tools/isolated-ai.js": "8a63ef10858db59f5b4395855ec177bebdb3f4590b0248f593c7db9fd7d0e364"
   },
   "profile": "current-production-self-play-smoke",
   "sourceBlobs": {
@@ -28,5 +29,66 @@
     "source/src/bfai.js": "bc4e63136c141ecb03fad989de32af275c7820a7"
   },
   "historicalDataCompatible": false,
-  "candidateSourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3"
+  "candidateSourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
+  "publishedAiInputs": {
+    "sourceRepository": "liukaidipeng-ops/chuhan_gpt",
+    "sourceHead": "7b410232d9191bd0a233bbe0232062c0a032e1cf",
+    "baseline": {
+      "sourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
+      "publishedPath": "ai/baseline.js",
+      "publishedSha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233"
+    },
+    "candidate": {
+      "sourceSha256": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
+      "publishedPath": "ai/candidate.js",
+      "publishedSha256": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+      "requiredEnvironment": {
+        "BFAI_ROOT_RR": "1"
+      }
+    },
+    "transform": {
+      "tool": "Terser 5.44.0",
+      "compress": false,
+      "mangle": false,
+      "comments": false,
+      "format": "beautify",
+      "trailingNewline": true
+    }
+  },
+  "equivalenceChecks": {
+    "parserCanonicalReprint": {
+      "method": "Terser 5.44.0 parse and canonical reprint, no compression or mangling; raw and published bytes compared after canonical reprint",
+      "baselineCanonicalSha256": "6cf2a57e45c0cc83ce3f1dd0473b9fc351ed0a27342c0bf7fea01bccdba5772d",
+      "candidateCanonicalSha256": "a61af590a91c7261844d1eded6cee0bbb0d27514c4036935804833e441d86692",
+      "baselineEqual": true,
+      "candidateEqual": true
+    },
+    "fixedPositionBehavior": {
+      "fixtureCount": 12,
+      "fixedDepth": 4,
+      "noise": 0,
+      "top": 1,
+      "random": 0.5,
+      "baselineEnvironment": {
+        "BFAI_ROOT_RR": "0"
+      },
+      "candidateEnvironment": {
+        "BFAI_ROOT_RR": "1"
+      },
+      "comparedFields": [
+        "actions",
+        "value",
+        "completed depth",
+        "nodes",
+        "legality",
+        "top candidates"
+      ],
+      "baselineRawAndPublishedSha256": "8ecfa8492457d9a9180223fb337cfd0cc73f84a03f562b178978caca38bbf769",
+      "candidateRawAndPublishedSha256": "c8793f5ca40449793bc3934b70ba383cc4a63fd1034a1aff2c3eef4e5f0d4aac",
+      "baselineEqual": true,
+      "candidateEqual": true,
+      "allLegal": true
+    }
+  },
+  "publishedInputCommit": "d5154c1471da42c8e8ee5a2359f046595128a6cf"
 }

@@ -13,6 +13,7 @@ function validateGame(record,expected){
     if(d.phase==='forced-pass'){assert.equal(d.stopReason,'forced-pass');continue;}
     assert.equal(d.phase,'search');assert.equal(d.ai,d.side===(expected.flip?'b':'r')?'A':'B');assert.equal(d.level,expected.level);assert.equal(d.levelConfig.budget,expected.budget);assert.equal(d.levelConfig.minNodes,expected.minNodes);assert(!d.levelConfig.nodes);
     assert(d.thinking&&d.thinking.trace);assert.equal(typeof d.thinking.trace.why,'string');assert(d.thinking.trace.why.length>0);assert.equal(d.stopReason,d.thinking.trace.why);
+    if(expected.aiHashes){assert(d.aiIdentity);assert.equal(d.aiIdentity.file,d.ai==='A'?'ai/candidate.js':'ai/baseline.js');assert.equal(d.aiIdentity.sha256,expected.aiHashes[d.ai]);assert.equal(d.aiIdentity.rootRR,d.ai==='A'?'1':'0');assert.equal(d.rngSeed,(Math.imul(expected.seed,2654435761)+d.ply)>>>0);}
     assert.equal(d.nodes,d.thinking.nodes);assert.equal(d.depth,d.thinking.depth);assert.deepEqual(d.actions,d.thinking.trace.seq);
     if(!['only-art','no-move'].includes(d.stopReason))assert(Array.isArray(d.thinking.trace.iter),'Complete iteration trace missing');
   }
@@ -43,7 +44,7 @@ function collectPair(dir,expected,play){
 }
 function launchGame(c,e,dir){
   const attempt=fs.mkdtempSync(path.join(dir,`attempt-${e.flip?1:0}-`)),raw=path.join(attempt,'raw.json');
-  const args=['tools/bfsim.js','--match',[c.candidate.path,c.baseline.path].join(','),'--match-levels',`${c.level},${c.level}`,'--games','2','--match-one',e.flip?'1':'0','--seed',String(e.seed),'--open','0','--jobs','1','--max-rounds',String(c.maxRounds),'--fixed','--trace','--quiet','--journal',attempt,'--json',raw];
+  const args=['tools/bfsim.js','--match',[c.candidate.path,c.baseline.path].join(','),'--match-levels',`${c.level},${c.level}`,'--games','2','--match-one',e.flip?'1':'0','--seed',String(e.seed),'--open','0','--jobs','1','--max-rounds',String(c.maxRounds),'--fixed','--trace','--candidate-root-rr','--quiet','--journal',attempt,'--json',raw];
   atomic(path.join(attempt,'request.json'),{experimentId:e.id,seed:e.seed,flip:e.flip,args,startedAt:new Date().toISOString(),commit:process.env.GITHUB_SHA||null,run:process.env.GITHUB_RUN_ID||null,node:process.version});
   const out=fs.openSync(path.join(attempt,'simulator.log'),'w');
   // Linux timeout kills the entire simulator/worker process group, with a five-second kill grace.
@@ -77,7 +78,7 @@ function recoverCompletedAttempts(dir,expected){
 }
 function run(index,out){
   const c=JSON.parse(fs.readFileSync(path.join(root,'config/compare600.json'))),gate=preflight(c);assert(gate.ready,gate.blockers.join('; '));assert.equal(c.formalLaunchEnabled,true);
-  assert(Number.isInteger(index)&&index>=0&&index<300);const id=identity(c),seed=c.seedStart+index,dir=path.resolve(out,`pair-${seed}`),e={id,seed,level:c.level,budget:c.budgetMs,minNodes:c.minNodes};
+  assert(Number.isInteger(index)&&index>=0&&index<300);const id=identity(c),seed=c.seedStart+index,dir=path.resolve(out,`pair-${seed}`),e={id,seed,level:c.level,budget:c.budgetMs,minNodes:c.minNodes,aiHashes:{A:c.candidate.fileSha256,B:c.baseline.fileSha256}};
   fs.mkdirSync(dir,{recursive:true});
   // An operator must confirm any previous process has terminated; exclusive lock prevents concurrent duplicate starts.
   const lock=path.join(dir,'active.lock'),fd=fs.openSync(lock,'wx');fs.writeFileSync(fd,JSON.stringify({pid:process.pid,run:process.env.GITHUB_RUN_ID||null,at:new Date().toISOString()}));fs.closeSync(fd);

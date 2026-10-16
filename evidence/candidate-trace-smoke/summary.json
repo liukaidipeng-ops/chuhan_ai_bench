@@ -1,0 +1,86 @@
+{
+  "formalGames": 0,
+  "validatedGames": 2,
+  "seed": 610159901,
+  "aiHashes": {
+    "A": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+    "B": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233"
+  },
+  "sourceCommit": "d5154c1471da42c8e8ee5a2359f046595128a6cf",
+  "results": [
+    {
+      "flip": false,
+      "reason": "cap",
+      "unresolved": true,
+      "decisions": [
+        {
+          "side": "r",
+          "ai": "A",
+          "identity": {
+            "file": "ai/candidate.js",
+            "sha256": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+            "rootRR": "1",
+            "pid": 1357
+          },
+          "rngSeed": 786499085,
+          "ms": 4780,
+          "nodes": 357204,
+          "stop": "time",
+          "traceSha256": "5a2e2e6ae70ddcf82670191f3bb0ec4565b93ec24a8f75b006f08cd8f23a8ef7"
+        },
+        {
+          "side": "b",
+          "ai": "B",
+          "identity": {
+            "file": "ai/baseline.js",
+            "sha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
+            "rootRR": "0",
+            "pid": 1364
+          },
+          "rngSeed": 786499086,
+          "ms": 17536,
+          "nodes": 1075769,
+          "stop": "depth",
+          "traceSha256": "2b6fcc63c3afae3d7cbc8aa707327aa951d4c5aa04cff476b542dac9699e6c58"
+        }
+      ]
+    },
+    {
+      "flip": true,
+      "reason": "cap",
+      "unresolved": true,
+      "decisions": [
+        {
+          "side": "r",
+          "ai": "B",
+          "identity": {
+            "file": "ai/baseline.js",
+            "sha256": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233",
+            "rootRR": "0",
+            "pid": 1364
+          },
+          "rngSeed": 786499085,
+          "ms": 2848,
+          "nodes": 138351,
+          "stop": "time",
+          "traceSha256": "24bc5eb84ba11d087a8302ffa56dd0c2ca47d2e8c0f98c3e566d0feb98a8c192"
+        },
+        {
+          "side": "b",
+          "ai": "A",
+          "identity": {
+            "file": "ai/candidate.js",
+            "sha256": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+            "rootRR": "1",
+            "pid": 1357
+          },
+          "rngSeed": 786499086,
+          "ms": 10314,
+          "nodes": 476540,
+          "stop": "time",
+          "traceSha256": "60481ddbfecada34ac71b6d18e08cbe0768e7b5a28ee9003b6694b9a469a5890"
+        }
+      ]
+    }
+  ]
+}
