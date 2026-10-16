@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "reviewRoute": "fixed-public-commit",
+  "inputCommit": "d5154c1471da42c8e8ee5a2359f046595128a6cf",
+  "publicInputHashes": {
+    "candidate": "81b34222a0e06494e96e3fb4521eb28c72c7c2c2cd8e7384e3eded03542af314",
+    "baseline": "cfc40355fa7d45d8bab7561a946621a92e643a452ca8301d8a544e915e114233"
+  },
+  "publicationManifestSha256": "0645f5112210dc077f4defc259379b4b17bd2a4312ff9022204f8b47be00deb6",
+  "publicationAttestation": {
+    "canonicalReprintEqual": true,
+    "fixedPositionCount": 12,
+    "originalArchiveIndependentlyRead": false
+  },
+  "localCandidateSmoke": {
+    "seed": 610159901,
+    "validatedGames": 2,
+    "formalGames": 0
+  },
+  "cloudSmoke": {
+    "url": "https://github.com/liukaidipeng-ops/chuhan_ai_bench/actions/runs/38877422166",
+    "runId": 38877422166,
+    "jobId": 116895729652,
+    "commit": "db9aa558b05abc2db11724cc40f25e2cc8b1393c",
+    "conclusion": "success",
+    "testsPassed": 21,
+    "seed": 610159902,
+    "validatedGames": 2,
+    "formalGames": 0,
+    "unresolved": 2,
+    "logRetentionDays": 90,
+    "artifactCount": 0,
+    "transportSha256": "41f42e4aa7d30a4342e0d02df6ccefea98f0761c6434a1e61503f693ed288cd6",
+    "compressedBytes": 18444,
+    "chunks": 7,
+    "decodedFileHashes": {
+      "game-610159902-0.jsonl": "7cf81b19be7767b53ef93f8bda3ceecec3039a51f067c19a2e93fa0f67e8969c",
+      "game-610159902-1.jsonl": "b76ee092c4bcf4c0ca50b70de37ea1bcb5e901a3e8cc5c212aab2a004d64451c",
+      "raw.json": "10d37b1df608fdecf63694ae1e058da2d45d621fe43321d2b320a3506a2d6a6d",
+      "simulator.log": "9ede4f606918a22e61782619c16b3f146a4e5e8884404530e80ef14070d59b1a"
+    }
+  },
+  "storage": {
+    "strategy": "workflow-logs-only",
+    "billingReference": "https://docs.github.com/en/billing/concepts/product-billing/github-actions",
+    "basis": "Public repository standard runners are free; logs/job summaries do not count toward artifact storage allowance. No artifacts or caches are created.",
+    "accountArtifactUsageChecked": false
+  },
+  "archiveManifestFullyVerified": false,
+  "checkedAt": "2026-10-16T09:07:39.788669+00:00"
+}

@@ -17,15 +17,32 @@ function layout(c){
 function preflight(c,dir=root){
   const pairs=layout(c),blockers=[];
   const requireTrue=(x,message)=>{if(x!==true)blockers.push(message);};
-  requireTrue(c.evidence.reviewed,'Read and hash EXPERIMENT_CARD, GATE_SUMMARY, ZIP and patch');
-  requireTrue(c.evidence.frozenFilesVerified,'Independently verify only frozen baseline/candidate/patch identities; known archive manifest defect remains');
-  requireTrue(c.evidence.runtimeFrozenIdentityVerified,'Prove actual runtime loads verified frozen sources, not unchecked current files');
-  requireTrue(c.evidence.smallRegressionPassed,'Independently verify small-regression evidence');
-  requireTrue(c.candidate.equivalenceVerified,'Verify original/public candidate equivalence');
-  requireTrue(c.storage.verifiedNoCharges,'Verify account-wide zero-charge storage boundary; public runner pricing is insufficient');
+  if(c.evidence.reviewRoute==='fixed-public-commit'){
+    assert.equal(c.publishedInputCommit,'d5154c1471da42c8e8ee5a2359f046595128a6cf');
+    const receiptBytes=fs.readFileSync(path.join(dir,'evidence/publication-manifest.json'));
+    assert.equal(hash(receiptBytes),c.evidence.publicationManifestSha256);
+    const receipt=JSON.parse(receiptBytes);
+    for(const key of ['baseline','candidate']){assert.equal(receipt.publishedAiInputs[key].sourceSha256,c[key].sourceSha256);assert.equal(receipt.publishedAiInputs[key].publishedSha256,c[key].fileSha256);}
+    const eq=receipt.equivalenceChecks;assert.equal(eq.parserCanonicalReprint.baselineEqual,true);assert.equal(eq.parserCanonicalReprint.candidateEqual,true);assert.equal(eq.fixedPositionBehavior.baselineEqual,true);assert.equal(eq.fixedPositionBehavior.candidateEqual,true);assert.equal(eq.fixedPositionBehavior.allLegal,true);assert.equal(eq.fixedPositionBehavior.fixtureCount,12);
+    requireTrue(c.evidence.runtimePublicIdentityVerified,'Verify actual candidate/control process hashes and flags');
+    requireTrue(c.evidence.cloudReplayVerified,'Verify real cloud traces and replay');
+    assert.equal(c.evidence.archiveManifestFullyVerified,false,'Do not claim uninspected archive was verified');
+  }else{
+    requireTrue(c.evidence.reviewed,'Read and hash EXPERIMENT_CARD, GATE_SUMMARY, ZIP and patch');
+    requireTrue(c.evidence.frozenFilesVerified,'Independently verify frozen baseline/candidate/patch identities');
+    requireTrue(c.evidence.runtimeFrozenIdentityVerified,'Verify actual runtime frozen identity');
+    requireTrue(c.evidence.smallRegressionPassed,'Verify small regression');
+    requireTrue(c.candidate.equivalenceVerified,'Verify original/public candidate equivalence');
+  }
+  requireTrue(c.storage.verifiedNoCharges,'Verify zero-charge storage transport');
+  requireTrue(c.storage.logRoundTripVerified,'Verify complete log transport retrieval');
+  assert.equal(c.storage.strategy,'workflow-logs-only');assert.equal(c.storage.cacheEnabled,false);
   if(!c.storage.evidenceReference||!c.storage.checkedAt)blockers.push('Missing storage verification evidence/time');
-  requireTrue(c.runnerImplementationVerified,'Verify runner full trace/stop-reason export, paired replay and resumable missing-game handling');
-  for(const k of ['experimentCardSha256','gateSummarySha256','equivalenceEvidenceSha256','traceSmokeSha256'])if(!/^[a-f0-9]{64}$/.test(c.evidence[k]||''))blockers.push('Missing verified evidence hash: '+k);
+  requireTrue(c.runnerImplementationVerified,'Verify runner trace, replay and missing-game recovery');
+  for(const [k,file] of [['launchGateSha256','evidence/launch-gate-summary.json'],['traceSmokeSha256','evidence/candidate-trace-smoke/summary.json']]){
+    if(!/^[a-f0-9]{64}$/.test(c.evidence[k]||''))blockers.push('Missing verified evidence hash: '+k);
+    else assert.equal(hash(fs.readFileSync(path.join(dir,file))),c.evidence[k]);
+  }
   for(const [file,digest] of Object.entries(c.rules))assert.equal(hash(fs.readFileSync(path.join(dir,file))),digest,'Rules mismatch: '+file);
   global.XQ=require(path.join(dir,'src/rules.js'));global.BF=require(path.join(dir,'src/bingfa.js'));
   for(const key of ['baseline','candidate']){

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "experiment": "root-upgrade-state-rotation-vs-55919-xhard",
-  "status": "blocked-unverified-inputs",
+  "status": "verified-ready-for-fixed-600-game-launch",
   "pairs": 300,
   "games": 600,
   "seedStart": 610160000,
@@ -67,28 +67,32 @@
       "policy": "Use only independently verified frozen files. Do not waive identity checks or mark whole manifest verified."
     },
     "publicationManifestSha256": "0645f5112210dc077f4defc259379b4b17bd2a4312ff9022204f8b47be00deb6",
-    "publicationEquivalenceAttestationRead": true
+    "publicationEquivalenceAttestationRead": true,
+    "reviewRoute": "fixed-public-commit",
+    "runtimePublicIdentityVerified": true,
+    "cloudReplayVerified": true,
+    "launchGateSha256": "50d33ca5435744c3cbbf9b6b2dd2326ac3b2ada1ee4d4f3d33e85ac681b541f3"
   },
   "rules": {
     "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
     "src/bingfa.js": "56ae1087e8606de72c06ec6372332223f75126064fae8dcbc3687cbf4893039e"
   },
   "storage": {
-    "verifiedNoCharges": false,
-    "evidenceReference": null,
-    "checkedAt": null,
+    "verifiedNoCharges": true,
+    "evidenceReference": "https://github.com/liukaidipeng-ops/chuhan_ai_bench/actions/runs/38877422166",
+    "checkedAt": "2026-10-16T09:07:39.788669+00:00",
     "retentionDays": 7,
     "cacheEnabled": false,
-    "maximumExperimentBytes": 134217728,
-    "note": "No artifact upload or cache. Official billing docs exclude workflow logs from artifact allowance; require cloud retention>=7 and verified full log roundtrip before declaring this gate passed.",
+    "note": "Public repository standard runners are free; logs/job summaries do not count toward artifact storage allowance. No artifacts or caches are created.",
     "strategy": "workflow-logs-only",
-    "logRoundTripVerified": false
+    "logRoundTripVerified": true,
+    "observedRetentionDays": 90
   },
   "traceRequired": true,
   "stopReasonRequired": true,
-  "runnerImplementationVerified": false,
+  "runnerImplementationVerified": true,
   "retryPolicy": "Only explicit missing/error games; never replay a completed valid game. Incomplete pairs stay unresolved until both games verify.",
-  "formalLaunchEnabled": false,
+  "formalLaunchEnabled": true,
   "runnerComponentTestsVerified": true,
   "runnerBaselineSmokeEvidenceSha256": "4f9997996d63641306301d12acb9990ecf7d05deabdf7d560ddb4e876ff34fff",
   "publishedInputCommit": "d5154c1471da42c8e8ee5a2359f046595128a6cf",

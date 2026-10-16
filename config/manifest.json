@@ -8,7 +8,7 @@
   "longCheckLimit": 3,
   "sourceTransform": "comments removed with parser; no compression or mangling",
   "simulatorAdaptation": "frozen local AI modules; no git lookup, external engine override or tuning dump dependency; per-decision timing/actions and final-state replay evidence",
-  "formal600Enabled": false,
+  "formal600Enabled": true,
   "files": {
     "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
     "src/bingfa.js": "56ae1087e8606de72c06ec6372332223f75126064fae8dcbc3687cbf4893039e",
@@ -20,16 +20,22 @@
     "tools/replay.js": "dd282c1cca3cc3a6b0cd81dcb6573dc223dee4e392fac21ddff7acfbeaa2b9da",
     "tools/formal120.js": "348e411201ac7efaa1dd0205ce26c8686ab12c1a06a84f976f9984009bc0a7b0",
     "tools/formal120-summary.js": "bfb582eebfb35e752a61ed73a2cd27dad76e9657a3f93a10b9450146c1473ddf",
-    "tools/isolated-ai.js": "8a63ef10858db59f5b4395855ec177bebdb3f4590b0248f593c7db9fd7d0e364"
+    "tools/isolated-ai.js": "8a63ef10858db59f5b4395855ec177bebdb3f4590b0248f593c7db9fd7d0e364",
+    "tools/compare600-runner.js": "30dc17bbdc13d8cc390185fea073792fd2e1d007628c29a1973c2c300a26a025",
+    "tools/compare600-preflight.js": "855d1e78e358efdd88a1b262ef8e9697972274b4f014997c1a657ff4fc43e372",
+    "tools/compare600-summary.js": "c24f81f82e170c5762f5fdcb6eb2d511f35f564c79569e0073a066362e074e97",
+    "tools/trace-logpack.js": "dc4ec290c12fd7f5ee4d28b2733b86cbbfcdaf8d87c65a03e6dfb2ba2c7a1814",
+    "tools/candidate-smoke-check.js": "4ea8074ddebd921e532f74e8a3d2b3dc0c806d80847391998a7eddcb6451e54d",
+    ".github/workflows/compare600.yml": "5a461a9acbd1455403f64fa0e75b182c9a7fdd6aa4f6ce18ab1e4f816adb3100"
   },
-  "profile": "current-production-self-play-smoke",
+  "profile": "root-order-candidate-vs-baseline-xhard",
   "sourceBlobs": {
     "source/src/rules.js": "effb00bc7c64061706d2a1af58700d48ab3ce3ef",
     "source/src/bingfa.js": "be0c398bf85adbaa065d9952f216ba3b03551167",
     "source/src/bfai.js": "bc4e63136c141ecb03fad989de32af275c7820a7"
   },
   "historicalDataCompatible": false,
-  "candidateSourceSha256": "55919a98e4c668b3d40b40264339c27dea6d6b2e76c6fe8ab33be20ff32e11d3",
+  "candidateSourceSha256": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
   "publishedAiInputs": {
     "sourceRepository": "liukaidipeng-ops/chuhan_gpt",
     "sourceHead": "7b410232d9191bd0a233bbe0232062c0a032e1cf",

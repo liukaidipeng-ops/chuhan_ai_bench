@@ -10,5 +10,5 @@ test('duplicate blocks, old seeds and changed budget rejected',()=>{
   for(const change of [{blocks:[[0,100],[0,100],[200,300]]},{seedStart:610150000},{budgetMs:600},{maxParallel:20},{nodeCap:100000}])assert.throws(()=>layout({...c,...change}));
 });
 test('missing evidence, candidate and storage fail closed',()=>{
-  const r=preflight(c);assert.equal(r.ready,false);assert(r.blockers.some(x=>x.includes('storage')));assert(r.blockers.some(x=>x.includes('candidate')));assert.equal(r.formalLaunchEnabled,false);
+  const blocked=JSON.parse(JSON.stringify(c));blocked.evidence.runtimePublicIdentityVerified=false;blocked.storage.verifiedNoCharges=false;blocked.formalLaunchEnabled=false;const r=preflight(blocked);assert.equal(r.ready,false);assert(r.blockers.some(x=>x.includes('storage')));assert(r.blockers.some(x=>x.includes('candidate')));assert.equal(r.formalLaunchEnabled,false);
 });

@@ -4,7 +4,7 @@ const {preflight,validate}=require('../tools/formal120');
 const config=require('../config/formal120.json');
 test('unarmed formal plan rejects historical candidate before simulation',()=>{
   if(config.expectedCandidateSha256===null)assert.throws(preflight,/Full candidate SHA256/);
-  else if(require('../tools/verify').hash(require('node:fs').readFileSync(require('node:path').join(__dirname,'../ai/candidate.js')))!==config.expectedCandidateSha256)assert.throws(preflight,/Candidate mismatch/);
+  else if(require('../tools/verify').hash(require('node:fs').readFileSync(require('node:path').join(__dirname,'../ai/candidate.js')))!==config.expectedCandidateSha256)assert.throws(preflight,/Candidate mismatch|Wrong source provenance/);
   else assert.doesNotThrow(preflight);
 });
 function fixture(){
