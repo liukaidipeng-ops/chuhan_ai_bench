@@ -18,6 +18,8 @@ function preflight(c,dir=root){
   const pairs=layout(c),blockers=[];
   const requireTrue=(x,message)=>{if(x!==true)blockers.push(message);};
   requireTrue(c.evidence.reviewed,'Read and hash EXPERIMENT_CARD, GATE_SUMMARY, ZIP and patch');
+  requireTrue(c.evidence.frozenFilesVerified,'Independently verify only frozen baseline/candidate/patch identities; known archive manifest defect remains');
+  requireTrue(c.evidence.runtimeFrozenIdentityVerified,'Prove actual runtime loads verified frozen sources, not unchecked current files');
   requireTrue(c.evidence.smallRegressionPassed,'Independently verify small-regression evidence');
   requireTrue(c.candidate.equivalenceVerified,'Verify original/public candidate equivalence');
   requireTrue(c.storage.verifiedNoCharges,'Verify account-wide zero-charge storage boundary; public runner pricing is insufficient');

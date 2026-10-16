@@ -49,7 +49,17 @@
     "experimentCardSha256": null,
     "gateSummarySha256": null,
     "equivalenceEvidenceSha256": null,
-    "traceSmokeSha256": null
+    "traceSmokeSha256": null,
+    "frozenFilesVerified": false,
+    "runtimeFrozenIdentityVerified": false,
+    "archiveManifestFullyVerified": false,
+    "knownManifestDefect": {
+      "path": "current/src/bfai.js",
+      "listedShaPrefix": "5a5177",
+      "reportedActualSha256": "be3d77e503f38d322418049f96ba0c5f06788e9da139a6e9a5290aeaeeaf054d",
+      "status": "reported-by-independent-review-not-locally-reverified",
+      "policy": "Use only independently verified frozen files. Do not waive identity checks or mark whole manifest verified."
+    }
   },
   "rules": {
     "src/rules.js": "d7459331ebbbe573ffedd5aa3d45e436ab2a8eedb14717b67cbb35656fa8b6ee",
