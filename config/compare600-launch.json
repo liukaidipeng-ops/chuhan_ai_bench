@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "configSha256": "22e48c06fee6c8bf49062bd6c1e9b54f012468c78acc8bc605d4aba993f19309",
+  "pairs": 300,
+  "games": 600,
+  "seedStart": 610160000,
+  "seedEnd": 610160299,
+  "preparedCommit": "66a3d7c27b27aa2422fe8a2184a5e5ba8ca09383",
+  "smokeRun": "https://github.com/liukaidipeng-ops/chuhan_ai_bench/actions/runs/38877422166",
+  "authorization": "User-approved fixed maximum 600 games on free standard public GitHub runners with full thinking logs and necessary experiment documentation",
+  "retry": "Do not rerun successful games or this entire workflow"
+}
