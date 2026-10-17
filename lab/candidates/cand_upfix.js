@@ -27,7 +27,8 @@
   const BSMIN = ENV.BFAI_BSMIN != null ? +ENV.BFAI_BSMIN : 1;
   const BSV = ENV.BFAI_BSV != null ? +ENV.BFAI_BSV : 3;   // 背水一战还没用时在估值里值几分（和破釜沉舟一样先记 3）
   const UPX = ENV.BFAI_UPX === '1';
-  const DEFUP = ENV.BFAI_DEFUP === '1';   // 根上：被筛掉的守子升级也留一个名额   // 对方升级名额：解锁技能的升级也算
+  const DEFUP = ENV.BFAI_DEFUP === '1';
+  const CHKUP = ENV.BFAI_CHKUP === '1';   // 被将军：能吃将军子的升级也留名额   // 根上：被筛掉的守子升级也留一个名额   // 对方升级名额：解锁技能的升级也算
   const PFC = +(ENV.BFAI_PFC || 0), PFA = +(ENV.BFAI_PFA || 0), PFD = +(ENV.BFAI_PFD || 0);
   const HPF = [0, 1, 1.5, 1.9, 2.2], HPF_DEF = [0, 1, 1.15, 1.28, 1.36], HPF_ADV = [0, 1, 1.55, 1.75, 1.85];
   // 两点血以上的进攻子逼到了对方家门口：过了河，或者是占着九宫那三条竖线的车（它来贴脸将军，一级的士、帅砍不死它）
@@ -521,6 +522,10 @@
     const top = cand.filter(c => !c.unlock).slice(0, 3), ex = cand.find(c => c.unlock);
     if (ex) top.push(ex);
     // 防守升级盲区（#14 第 50–64 条，裁判每回合都要先升士）：被“守子没被捉不升”筛掉的士 / 相里，静态分最高的一个也给名额，值不值让搜索定
+    // 被将军时：能吃掉将军子的那几枚子，升了再吃可能才吃得下、吃了才站得住（战术部门 K6-2，g17 第 32 条：升马再马吃将军的炮）；名额外补上，最多两个
+    if (CHKUP && chk) { const ck = new Set(XQ.checkers(S.board, me === 'r' ? 'b' : 'r')); let n = 0;
+      for (const c of skipped.concat(cand).filter(c => !top.includes(c)).sort((x, y) => y.gain - x.gain)) { if (n >= 2) break;
+        if (A.moveTargets(c.S, c.at[0], c.at[1]).some(m => { const q = c.S.board[m.to[1]][m.to[0]]; return q && ck.has(q.id); })) { top.push(c); n++; } } }
     if (DEFUP) { const d = skipped.filter(c => { const p = S.board[c.at[1]][c.at[0]]; return p && (p.t === 'a' || p.t === 'e') && !c.must; }).sort((x, y) => y.gain - x.gain)[0]; if (d) top.push(d); }
     if (rec) for (const c of skipped) { const p = S.board[c.at[1]][c.at[0]]; if (!top.includes(c)) rec.push({ at: c.at, t: p.t, lv: p.lv, gain: +c.gain.toFixed(2), why: '筛子：守子没被捉 / 攒钱' }); }
     if (rec) for (const c of cand) if (!top.includes(c)) { const p = S.board[c.at[1]][c.at[0]]; rec.push({ at: c.at, t: p.t, lv: p.lv, gain: +c.gain.toFixed(2), why: '名额满了（只留前三种）' }); }

@@ -1,1 +1,1 @@
-{"match":"candidates/cand_upfix.js,src/bfai.js","pairs":300,"seed":40000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_UPX":"1","BFAI_DEFUP":"1"},"note":"修法 A + B + D（被筛掉的守子升级留一个名额，#14 第 50–64 条该升士）对线上"}
+{"match": "candidates/cand_upfix.js,src/bfai.js", "pairs": 300, "seed": 40000, "chunks": 20, "args": "--level hard --nodes hard=100000", "env": {"BFSIM_ENGINE": "tools/variants/engine_fast.js", "BFAI_UPX": "1", "BFAI_DEFUP": "1"}, "note": "A + B + D（被筛掉的守子升级留名额）；同档霸王 10 万节点，600 局"}
