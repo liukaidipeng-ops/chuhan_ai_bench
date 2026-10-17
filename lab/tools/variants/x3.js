@@ -8,9 +8,12 @@ m.filename = file; m.paths = Module._nodeModulePaths(path.dirname(file));
 m._compile(fs.readFileSync(file, 'utf8'), file);
 const X = m.exports, H = X.LEVELS.hard, XH = X.LEVELS.xhard, k = XH.budget / H.budget;
 const L = { ...XH };
+// BFAI_X3_SET="depth=9,q=6"：改兵仙档的设置（只改待测这一方）；BFAI_X3_MULT=1.3：搜索量再乘一个数（比如提速版按快多少倍补给它）
+for (const kv of (process.env.BFAI_X3_SET || '').split(',').filter(Boolean)) { const [k, v] = kv.split('='); L[k] = isNaN(+v) ? v : +v; }
+const mult = +(process.env.BFAI_X3_MULT || 1);
 for (const key of ['nodes', 'budget']) {
   let v = L[key];
-  Object.defineProperty(L, key, { enumerable: true, get: () => v, set: n => { v = n > 0 ? Math.round(n * k) : n; } });
+  Object.defineProperty(L, key, { enumerable: true, get: () => v, set: n => { v = n > 0 ? Math.round(n * k * mult) : n; } });
 }
 X.LEVELS.hard = L;
 module.exports = X;
