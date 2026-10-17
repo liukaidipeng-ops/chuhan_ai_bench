@@ -1,0 +1,8 @@
+# upfix-gm（GitHub Actions 运行 39068305819）
+# 请求：{"match":"candidates/cand_gm.js,src/bfai.js","pairs":300,"seed":40000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_UPX":"1","BFAI_DEFUP":"2","BFAI_CHKUP":"1","BFAI_UP2":"1","BFAI_MATE2":"1"},"note":"试玩页第二版（55e616）：upfix-g + MATE2（根上两步杀检查）；同档霸王 10 万节点，600 局"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 62.2%（600 局，300 对；95% 区间 58.3%～66.0%）
+  新电脑执汉 300 局 胜 197 和 2；执楚 300 局 胜 174 和 2
+  每对：两局全胜 113 对，一胜一负 141 对，两局全负 42 对；和棋 4 局
+  平均每步 142053 个节点
+  节奏：平均每局领先换手 0.59 次；赢家曾落后 ≥ 5 分（翻盘）的局 33.7%（596 局有记录）
