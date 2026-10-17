@@ -1,0 +1,1 @@
+{"match": "candidates/cand_gm.js,src/bfai.js", "pairs": 300, "seed": 40000, "chunks": 20, "args": "--level hard --nodes hard=100000", "env": {"BFSIM_ENGINE": "tools/variants/engine_fast.js", "BFAI_UPX": "1", "BFAI_DEFUP": "2", "BFAI_CHKUP": "1", "BFAI_UP2": "1", "BFAI_MATE2": "1"}, "note": "试玩页第二版（55e616）：upfix-g + MATE2（根上两步杀检查）；同档霸王 10 万节点，600 局"}
