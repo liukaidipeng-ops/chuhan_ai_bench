@@ -1,0 +1,8 @@
+# r100-base（GitHub Actions 运行 39024874412；提交步骤失败，从 collect 日志抄录）
+# 请求：{"match":"tools/variants/x3.js,src/bfai.js","pairs":200,"seed":30000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_X3_SRC":"src/bfai.js"},"note":"真实量级基线：线上电脑当兵仙（30 万节点）对线上霸王（10 万）"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 60.3%（400 局，200 对；95% 区间 55.5%～65.0%）
+  新电脑执汉 200 局 胜 128 和 2；执楚 200 局 胜 112 和 0
+  每对：两局全胜 70 对，一胜一负 98 对，两局全负 30 对；和棋 2 局
+  平均每步 251557 个节点
+  节奏：平均每局领先换手 0.72 次；赢家曾落后 ≥ 5 分（翻盘）的局 36.2%（398 局有记录）
