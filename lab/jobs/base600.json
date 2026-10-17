@@ -1,0 +1,1 @@
+{"match":"tools/variants/x3.js,src/bfai.js","pairs":300,"seed":20000,"chunks":20,"args":"--level hard --nodes hard=20000","env":{"BFAI_X3_SRC":"src/bfai.js"},"note":"基线：线上电脑当兵仙（3 倍搜索量）对线上霸王，按节点数收手"}
