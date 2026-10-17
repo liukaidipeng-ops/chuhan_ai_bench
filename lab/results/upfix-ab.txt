@@ -1,0 +1,8 @@
+# upfix-ab（GitHub Actions 运行 39035664158）
+# 请求：{"match":"candidates/cand_upfix.js,src/bfai.js","pairs":300,"seed":40000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_UPX":"1"},"note":"A + B（对方解锁技能的升级也留名额）；同档霸王 10 万节点，600 局"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 49.1%（600 局，300 对；95% 区间 45.2%～53.0%）
+  新电脑执汉 300 局 胜 169 和 1；执楚 300 局 胜 125 和 0
+  每对：两局全胜 67 对，一胜一负 159 对，两局全负 73 对；和棋 1 局
+  平均每步 141037 个节点
+  节奏：平均每局领先换手 0.63 次；赢家曾落后 ≥ 5 分（翻盘）的局 35.1%（599 局有记录）
