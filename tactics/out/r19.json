@@ -1,0 +1,704 @@
+{
+ "file": "g19.json",
+ "ver": "2026.10.17-b789d2",
+ "rows": [
+  {
+   "i": 0,
+   "turn": 1,
+   "side": "汉",
+   "act": "炮1 7,2→4,2",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 1,
+   "turn": 2,
+   "side": "楚",
+   "act": "马1 7,9→6,7",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": 0.796
+  },
+  {
+   "i": 2,
+   "turn": 3,
+   "side": "汉",
+   "act": "兵1 6,3→6,4",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 3,
+   "turn": 4,
+   "side": "楚",
+   "act": "炮1 1,7→4,7",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": 1.723
+  },
+  {
+   "i": 4,
+   "turn": 5,
+   "side": "汉",
+   "act": "马1 7,0→6,2",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 5,
+   "turn": 6,
+   "side": "楚",
+   "act": "车1 8,9→8,7",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": 0.796
+  },
+  {
+   "i": 6,
+   "turn": 7,
+   "side": "汉",
+   "act": "车1 8,0→7,0",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 7,
+   "turn": 8,
+   "side": "楚",
+   "act": "兵1 0,6→0,5",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": 0.996
+  },
+  {
+   "i": 8,
+   "turn": 9,
+   "side": "汉",
+   "act": "马1 1,0→2,2",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 9,
+   "turn": 10,
+   "side": "楚",
+   "act": "车1 0,9→0,6",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": 0.946
+  },
+  {
+   "i": 10,
+   "turn": 11,
+   "side": "汉",
+   "act": "兵1 2,3→2,4",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 11,
+   "turn": 12,
+   "side": "楚",
+   "act": "车1 0,6→1,6",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": 0.562
+  },
+  {
+   "i": 12,
+   "turn": 13,
+   "side": "汉",
+   "act": "兵1 0,3→0,4",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 13,
+   "turn": 13,
+   "side": "楚",
+   "act": "升兵1@0,5",
+   "ev": [],
+   "merit": {
+    "r": 3,
+    "b": 0
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 14,
+   "turn": 14,
+   "side": "楚",
+   "act": "兵2 0,5→0,4 ×兵1",
+   "ev": [
+    "kill:汉兵1"
+   ],
+   "merit": {
+    "r": 4,
+    "b": 2
+   },
+   "check": false,
+   "v": 0.977
+  },
+  {
+   "i": 15,
+   "turn": 15,
+   "side": "汉",
+   "act": "车1 0,0→0,4 ×兵2",
+   "ev": [
+    "hit:",
+    "repel:"
+   ],
+   "merit": {
+    "r": 4,
+    "b": 2
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 16,
+   "turn": 15,
+   "side": "楚",
+   "act": "技能 兵2@0,4",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 2
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 17,
+   "turn": 16,
+   "side": "楚",
+   "act": "车1 1,6→0,6",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 2
+   },
+   "check": false,
+   "v": -1.706
+  },
+  {
+   "i": 18,
+   "turn": 17,
+   "side": "汉",
+   "act": "马1 2,2→3,4",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 2
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 19,
+   "turn": 18,
+   "side": "楚",
+   "act": "车1 0,6→1,6",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 2
+   },
+   "check": false,
+   "v": 1.195
+  },
+  {
+   "i": 20,
+   "turn": 19,
+   "side": "汉",
+   "act": "炮1 1,2→1,9 ×马1",
+   "ev": [
+    "kill:楚马1"
+   ],
+   "merit": {
+    "r": 7,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 21,
+   "turn": 19,
+   "side": "楚",
+   "act": "升士1@3,9",
+   "ev": [],
+   "merit": {
+    "r": 7,
+    "b": 1
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 22,
+   "turn": 20,
+   "side": "楚",
+   "act": "车1 1,6→1,9 ×炮1",
+   "ev": [
+    "kill:汉炮1"
+   ],
+   "merit": {
+    "r": 8,
+    "b": 4
+   },
+   "check": false,
+   "v": -1.623
+  },
+  {
+   "i": 23,
+   "turn": 21,
+   "side": "汉",
+   "act": "车1 0,0→0,4 ×兵2",
+   "ev": [
+    "kill:楚兵2"
+   ],
+   "merit": {
+    "r": 10,
+    "b": 5
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 24,
+   "turn": 21,
+   "side": "楚",
+   "act": "升炮1@4,7",
+   "ev": [],
+   "merit": {
+    "r": 10,
+    "b": 0
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 25,
+   "turn": 22,
+   "side": "楚",
+   "act": "车1 1,9→1,0",
+   "ev": [],
+   "merit": {
+    "r": 10,
+    "b": 0
+   },
+   "check": false,
+   "v": -0.94
+  },
+  {
+   "i": 26,
+   "turn": 22,
+   "side": "汉",
+   "act": "升马1@3,4",
+   "ev": [],
+   "merit": {
+    "r": 5,
+    "b": 0
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 27,
+   "turn": 23,
+   "side": "汉",
+   "act": "马2 3,4→4,6 ×兵1",
+   "ev": [
+    "kill:楚兵1"
+   ],
+   "merit": {
+    "r": 6,
+    "b": 1
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 28,
+   "turn": 24,
+   "side": "楚",
+   "act": "车1 1,0→2,0 ×相1",
+   "ev": [
+    "kill:汉相1"
+   ],
+   "merit": {
+    "r": 7,
+    "b": 3
+   },
+   "check": false,
+   "v": 0.405
+  },
+  {
+   "i": 29,
+   "turn": 24,
+   "side": "汉",
+   "act": "升炮1@4,2",
+   "ev": [],
+   "merit": {
+    "r": 2,
+    "b": 3
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 30,
+   "turn": 25,
+   "side": "汉",
+   "act": "马2 4,6→6,7 ×马1",
+   "ev": [
+    "kill:楚马1"
+   ],
+   "merit": {
+    "r": 5,
+    "b": 4
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 31,
+   "turn": 26,
+   "side": "楚",
+   "act": "炮2 4,7→4,2 ×炮2",
+   "ev": [
+    "hit:",
+    "repel:"
+   ],
+   "merit": {
+    "r": 5,
+    "b": 4
+   },
+   "check": false,
+   "v": -3.998
+  },
+  {
+   "i": 32,
+   "turn": 27,
+   "side": "汉",
+   "act": "马2 6,7→7,9",
+   "ev": [],
+   "merit": {
+    "r": 5,
+    "b": 4
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 33,
+   "turn": 28,
+   "side": "楚",
+   "act": "车1 8,7→8,8",
+   "ev": [],
+   "merit": {
+    "r": 6,
+    "b": 5
+   },
+   "check": false,
+   "v": -4.748
+  },
+  {
+   "i": 34,
+   "turn": 28,
+   "side": "汉",
+   "act": "升士1@3,0",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 5
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 35,
+   "turn": 29,
+   "side": "汉",
+   "act": "车1 7,0→7,7 ×炮1",
+   "ev": [
+    "kill:楚炮1"
+   ],
+   "merit": {
+    "r": 7,
+    "b": 6
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 36,
+   "turn": 30,
+   "side": "楚",
+   "act": "炮2 4,7→4,2 ×炮2",
+   "ev": [
+    "kill:汉炮2"
+   ],
+   "merit": {
+    "r": 9,
+    "b": 11
+   },
+   "check": false,
+   "v": -6.544
+  },
+  {
+   "i": 37,
+   "turn": 30,
+   "side": "汉",
+   "act": "升相1@6,0",
+   "ev": [],
+   "merit": {
+    "r": 7,
+    "b": 11
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 38,
+   "turn": 31,
+   "side": "汉",
+   "act": "相2 6,0→4,2 ×炮2",
+   "ev": [
+    "kill:楚炮2"
+   ],
+   "merit": {
+    "r": 11,
+    "b": 12
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 39,
+   "turn": 31,
+   "side": "楚",
+   "act": "升车1@2,0",
+   "ev": [],
+   "merit": {
+    "r": 11,
+    "b": 4
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 40,
+   "turn": 32,
+   "side": "楚",
+   "act": "背水[2,0→0,0 0,0→0,4]",
+   "ev": [
+    "kill:汉车1"
+   ],
+   "merit": {
+    "r": 13,
+    "b": 10
+   },
+   "check": false,
+   "v": -12.712
+  },
+  {
+   "i": 41,
+   "turn": 32,
+   "side": "汉",
+   "act": "升车1@7,7",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 10
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 42,
+   "turn": 33,
+   "side": "汉",
+   "act": "车2 7,7→0,7",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 10
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 43,
+   "turn": 33,
+   "side": "楚",
+   "act": "升相1@2,9",
+   "ev": [],
+   "merit": {
+    "r": 4,
+    "b": 8
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 44,
+   "turn": 34,
+   "side": "楚",
+   "act": "相2 2,9→0,7 ×车2",
+   "ev": [
+    "kill:汉车2"
+   ],
+   "merit": {
+    "r": 6,
+    "b": 15
+   },
+   "check": false,
+   "v": 15.23
+  },
+  {
+   "i": 45,
+   "turn": 35,
+   "side": "汉",
+   "act": "马1 6,2→5,4",
+   "ev": [],
+   "merit": {
+    "r": 6,
+    "b": 15
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 46,
+   "turn": 35,
+   "side": "楚",
+   "act": "升车2@0,4",
+   "ev": [],
+   "merit": {
+    "r": 6,
+    "b": 4
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 47,
+   "turn": 36,
+   "side": "楚",
+   "act": "车3 0,4→0,1",
+   "ev": [],
+   "merit": {
+    "r": 7,
+    "b": 5
+   },
+   "check": false,
+   "v": 28.127
+  },
+  {
+   "i": 48,
+   "turn": 37,
+   "side": "汉",
+   "act": "马1 5,4→4,6",
+   "ev": [],
+   "merit": {
+    "r": 7,
+    "b": 5
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 49,
+   "turn": 37,
+   "side": "楚",
+   "act": "升兵1@8,6",
+   "ev": [],
+   "merit": {
+    "r": 7,
+    "b": 2
+   },
+   "check": false,
+   "v": null
+  },
+  {
+   "i": 50,
+   "turn": 38,
+   "side": "楚",
+   "act": "车3 0,1→4,1",
+   "ev": [],
+   "merit": {
+    "r": 8,
+    "b": 4
+   },
+   "check": true,
+   "v": 8999
+  }
+ ],
+ "result": {
+  "winner": "b",
+  "loser": "r",
+  "reason": "checkmate"
+ }
+}
