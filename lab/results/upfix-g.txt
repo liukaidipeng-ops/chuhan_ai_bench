@@ -1,0 +1,8 @@
+# upfix-g（GitHub Actions 运行 39045163460）
+# 请求：{"match":"candidates/cand_g.js,src/bfai.js","pairs":300,"seed":40000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_UPX":"1","BFAI_DEFUP":"2","BFAI_CHKUP":"1","BFAI_UP2":"1"},"note":"试玩候选：A + B + C（含对方第一层）+ D2（守子升级只在九宫受压时）+ UP2（自己下一回合也考虑先升级）；同档霸王 10 万节点，600 局"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 62.3%（600 局，300 对；95% 区间 58.5%～66.1%）
+  新电脑执汉 300 局 胜 201 和 2；执楚 300 局 胜 171 和 2
+  每对：两局全胜 113 对，一胜一负 143 对，两局全负 40 对；和棋 4 局
+  平均每步 142008 个节点
+  节奏：平均每局领先换手 0.59 次；赢家曾落后 ≥ 5 分（翻盘）的局 34.4%（596 局有记录）
