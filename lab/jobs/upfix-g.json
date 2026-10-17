@@ -1,0 +1,1 @@
+{"match": "candidates/cand_g.js,src/bfai.js", "pairs": 300, "seed": 40000, "chunks": 20, "args": "--level hard --nodes hard=100000", "env": {"BFSIM_ENGINE": "tools/variants/engine_fast.js", "BFAI_UPX": "1", "BFAI_DEFUP": "2", "BFAI_CHKUP": "1", "BFAI_UP2": "1"}, "note": "试玩候选：A + B + C（含对方第一层）+ D2（守子升级只在九宫受压时）+ UP2（自己下一回合也考虑先升级）；同档霸王 10 万节点，600 局"}
