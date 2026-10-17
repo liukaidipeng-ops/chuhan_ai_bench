@@ -1,1 +1,1 @@
-{"match":"candidates/cand_upfix.js,src/bfai.js","pairs":300,"seed":40000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_UPX":"1"},"note":"修法 A + B（对方解锁技能的升级也留名额）对线上，同档霸王 10 万节点"}
+{"match":"candidates/cand_upfix.js,src/bfai.js","pairs":300,"seed":40000,"chunks":20,"args":"--level hard --nodes hard=100000","env":{"BFSIM_ENGINE":"tools/variants/engine_fast.js","BFAI_UPX":"1"},"note":"修法 A + B（对方解锁技能的升级也留名额）对线上（重新排队）"}

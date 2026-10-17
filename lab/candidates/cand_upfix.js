@@ -26,7 +26,8 @@
   const bsOn = () => (CFG.beishui && CFG.beishui.on ? CFG.beishui : null);
   const BSMIN = ENV.BFAI_BSMIN != null ? +ENV.BFAI_BSMIN : 1;
   const BSV = ENV.BFAI_BSV != null ? +ENV.BFAI_BSV : 3;   // 背水一战还没用时在估值里值几分（和破釜沉舟一样先记 3）
-  const UPX = ENV.BFAI_UPX === '1';   // 对方升级名额：解锁技能的升级也算
+  const UPX = ENV.BFAI_UPX === '1';
+  const DEFUP = ENV.BFAI_DEFUP === '1';   // 根上：被筛掉的守子升级也留一个名额   // 对方升级名额：解锁技能的升级也算
   const PFC = +(ENV.BFAI_PFC || 0), PFA = +(ENV.BFAI_PFA || 0), PFD = +(ENV.BFAI_PFD || 0);
   const HPF = [0, 1, 1.5, 1.9, 2.2], HPF_DEF = [0, 1, 1.15, 1.28, 1.36], HPF_ADV = [0, 1, 1.55, 1.75, 1.85];
   // 两点血以上的进攻子逼到了对方家门口：过了河，或者是占着九宫那三条竖线的车（它来贴脸将军，一级的士、帅砍不死它）
@@ -519,6 +520,9 @@
     // 前三个照旧；“守子升级解锁技能”的静态分低、排不进前三，另给一个名额（最多一个）
     const top = cand.filter(c => !c.unlock).slice(0, 3), ex = cand.find(c => c.unlock);
     if (ex) top.push(ex);
+    // 防守升级盲区（#14 第 50–64 条，裁判每回合都要先升士）：被“守子没被捉不升”筛掉的士 / 相里，静态分最高的一个也给名额，值不值让搜索定
+    if (DEFUP) { const d = skipped.filter(c => { const p = S.board[c.at[1]][c.at[0]]; return p && (p.t === 'a' || p.t === 'e') && !c.must; }).sort((x, y) => y.gain - x.gain)[0]; if (d) top.push(d); }
+    if (rec) for (const c of skipped) { const p = S.board[c.at[1]][c.at[0]]; if (!top.includes(c)) rec.push({ at: c.at, t: p.t, lv: p.lv, gain: +c.gain.toFixed(2), why: '筛子：守子没被捉 / 攒钱' }); }
     if (rec) for (const c of cand) if (!top.includes(c)) { const p = S.board[c.at[1]][c.at[0]]; rec.push({ at: c.at, t: p.t, lv: p.lv, gain: +c.gain.toFixed(2), why: '名额满了（只留前三种）' }); }
     // 根上补一个“升了攻击变大、能打死原来打不死的子”的升级（筛子挡掉的也算）：象 / 士二级、兵三级、车马炮按 r6 表升级都会加攻击。
     //   Ham 10-09 霸王局第 29 回合最好是“升象 + 象吃炮”，“守子没被捉不升”把它挡了（C64，对线上霸王 595 局 52.2%）
