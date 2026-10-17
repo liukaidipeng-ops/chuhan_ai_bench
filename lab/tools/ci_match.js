@@ -34,6 +34,18 @@ function stats(rs) {
   return { games: n, score: m, pairs: ps.length, lo: pm - 1.96 * se, hi: pm + 1.96 * se, asR: side('r'), asB: side('b'), pair2: pairsBy(1), pair1: pairsBy(0.5), pair0: pairsBy(0), draws: rs.filter(r => !r.winner).length };
 }
 const pct = x => (100 * x).toFixed(1) + '%';
+// 节奏（Ham 10-17：“一旦你失去自己的游戏节奏……就会很容易输”）：每局每 5 回合一个中立局面分（汉方视角，bfsim 的 samples）
+//   领先换手：分数从汉领先 ≥ 2 变成楚领先 ≥ 2（或反过来）算一次；翻盘：最后赢的一方曾经落后 ≥ 5 分
+function rhythm(rs) {
+  let swaps = 0, comebacks = 0, behind = 0, n = 0;
+  for (const r of rs) {
+    const xs = (r.samples || []).map(x => x.score); if (!xs.length || !r.winner) continue; n++;
+    let lead = 0; for (const v of xs) { const s = v >= 2 ? 1 : v <= -2 ? -1 : 0; if (s && lead && s !== lead) swaps++; if (s) lead = s; }
+    const w = r.winner === 'r' ? 1 : -1, worst = Math.min(...xs.map(v => v * w));
+    if (worst <= -5) { behind++; comebacks++; }
+  }
+  return { n, swapsPerGame: n ? swaps / n : 0, comebackRate: n ? comebacks / n : 0 };
+}
 
 const [cmd, ...rest] = process.argv.slice(2);
 if (cmd === 'plan') {
@@ -75,6 +87,7 @@ if (cmd === 'plan') {
       `  新电脑执汉 ${st.asR.n} 局 胜 ${st.asR.w} 和 ${st.asR.d}；执楚 ${st.asB.n} 局 胜 ${st.asB.w} 和 ${st.asB.d}`,
       `  每对：两局全胜 ${st.pair2} 对，一胜一负 ${st.pair1} 对，两局全负 ${st.pair0} 对；和棋 ${st.draws} 局`,
       moves ? `  平均每步 ${Math.round(nodes / moves)} 个节点` : '',
+      (h => `  节奏：平均每局领先换手 ${h.swapsPerGame.toFixed(2)} 次；赢家曾落后 ≥ 5 分（翻盘）的局 ${pct(h.comebackRate)}（${h.n} 局有记录）`)(rhythm(results)),
     ].filter(Boolean).join('\n') + '\n';
     fs.writeFileSync(path.join(RES, name + '.txt'), txt);
     fs.writeFileSync(path.join(RES, name + '.json.gz'), zlib.gzipSync(JSON.stringify({ request: j, stats: st, results, errors })));
