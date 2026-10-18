@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1.js,src/bfai.js", "pairs": 300, "seed": 55000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "上线候选 release-r1（开关写死：UPX+DEFUP2+CHKUP+UP2+MATE2+PFNOUP2，只给霸王兵仙）对线上，两边都霸王 5 秒；13 套测试已过"}
