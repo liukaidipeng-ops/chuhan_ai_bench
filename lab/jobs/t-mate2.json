@@ -1,0 +1,1 @@
+{"match": "candidates/cand_h.js,src/bfai.js", "env": {"BFAI_MATE2": "1"}, "pairs": 300, "seed": 51000, "chunks": 30, "args": "--level hard", "note": "真实计时逐个开关（10-18）：试玩第二版真实计时验收只有 50.5%（按节点 62%），候选每节点慢约 1.7 倍；看每个开关在真实时限下值不值"}
