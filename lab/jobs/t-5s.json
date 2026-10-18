@@ -1,0 +1,1 @@
+{"match": "candidates/live_5s.js,src/bfai.js", "pairs": 300, "seed": 52000, "chunks": 30, "args": "--level hard", "env": {}, "note": "霸王每步 5 秒对 3 秒（线上电脑原样），真实计时；配合 Ham 10-18 试玩页 0c24b2"}
