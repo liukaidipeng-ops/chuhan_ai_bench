@@ -1,0 +1,1 @@
+{"match": "src/bfai.js,src/bfai.js", "note": "对照：线上对线上，真实计时，应接近 50%", "pairs": 300, "seed": 51000, "chunks": 30, "args": "--level hard", "env": {}}

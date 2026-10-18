@@ -1,0 +1,1 @@
+{"match": "candidates/cand_h.js,src/bfai.js", "note": "对照：候选文件全关开关对线上，真实计时；单开开关都 ≤50%，先查候选文件本身是不是就弱", "pairs": 300, "seed": 51000, "chunks": 30, "args": "--level hard", "env": {}}
