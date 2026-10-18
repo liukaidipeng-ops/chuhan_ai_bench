@@ -1,0 +1,1 @@
+{"match": "candidates/cand_h.js,src/bfai.js", "pairs": 300, "seed": 54000, "chunks": 30, "args": "--level hard --budget 5000", "env": {"BFAI_UPX": "1", "BFAI_DEFUP": "2", "BFAI_CHKUP": "1", "BFAI_UP2": "1", "BFAI_UP3": "1", "BFAI_PFFULL": "1", "BFAI_MATE2": "1"}, "note": "试玩第二版 + K11 修法（UP3+PFFULL）对线上，按现在线上的霸王 5 秒（--budget 5000，两边都 5 秒）"}
