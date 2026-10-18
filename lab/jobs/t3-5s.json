@@ -1,0 +1,1 @@
+{"match": "candidates/live_5s.js,src/bfai.js", "pairs": 300, "seed": 53000, "chunks": 30, "args": "--level hard --budget 3000", "env": {}, "note": "霸王 5 秒对 3 秒，真实计时（--budget 3000 = 网页霸王真实每步 3 秒；之前的 t-* 和 accept-gm-time 漏了 --budget，模拟器默认 600 毫秒）"}

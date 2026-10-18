@@ -451,10 +451,12 @@
   const LEVELS = {
     easy: { depth: 1, q: 2, noise: 1.3, top: 3, up: 0.5, budget: 500 },
     mid: { depth: 3, q: 3, noise: 0.3, top: 1, up: 1, budget: 2500 },
-    hard: { depth: 7, q: 4, noise: 0.05, top: 1, up: 1, budget: 5000, minNodes: 20000, dyn: 2.7 },   // dyn：难走的局面最多放宽到几倍预算（C66，Ham 拍板单 ai_time1 = a：平时不变、关键时刻多想）
+    hard: { depth: 7, q: 4, noise: 0.05, top: 1, up: 1, budget: 3000, minNodes: 20000, dyn: 2.7 },   // dyn：难走的局面最多放宽到几倍预算（C66，Ham 拍板单 ai_time1 = a：平时不变、关键时刻多想）
     xhard: { depth: 7, q: 4, noise: 0.05, top: 1, up: 1, budget: 9000, minNodes: 60000, dyn: 2.7 },   // 比霸王更强的一档（C70，Ham 拍板单 ai_time2 = a）：和霸王一样，只是想 3 倍久——平时约 9 秒，难走时最多约 24 秒；对霸王 58.8%（600 局）
     ana: { depth: 3, q: 3, noise: 0, top: 1, up: 1, budget: 1200 },   // 对局分析用（TD，Ham 10-09）：不加噪声，每个局面限时 1.2 秒
   };
+  // 加时实验：模拟器会把 hard.budget 统一改成 --budget，这里让霸王档始终按 5/3 倍用时（--budget 3000 时即 5 秒）
+  { let b = LEVELS.hard.budget; Object.defineProperty(LEVELS.hard, 'budget', { get: () => b * 5 / 3, set: v => { b = v; }, enumerable: true }); }
 
   // 压在对方主帅跟前的进攻子数（和估值里的 attR / attB 同一个算法）
   function pressure(S, side) {
