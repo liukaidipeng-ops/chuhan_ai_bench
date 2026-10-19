@@ -1,0 +1,1 @@
+{"match": "candidates/release_r2.js,src/bfai.js", "pairs": 300, "seed": 56000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "r2 = r1 + ATKUP（g25 第 13 条先升炮再吃的修法），两边 5 秒"}
