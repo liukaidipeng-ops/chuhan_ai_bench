@@ -1,0 +1,1 @@
+{"match": "candidates/release_r4.js,src/bfai.js", "pairs": 300, "seed": 57000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "r4 = r3l + CAPUP2，两边 5 秒"}
