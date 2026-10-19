@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1.js,src/bfai.js", "seed": 56000, "note": "查 r1 64% vs gm 70.6%：r1 换一组种子重跑，看是不是噪声", "pairs": 300, "chunks": 30, "args": "--level hard --budget 5000", "env": {}}
