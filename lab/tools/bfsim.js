@@ -37,6 +37,7 @@
 //   拉旧版电脑时，引擎里没有它要用的接口会直接报错（不会悄悄少功能）；版本号对不上会提示。
 'use strict';
 const path = require('path');
+const PAT = (() => { try { const f = require('path').join(__dirname, 'patterns.js'); return require('fs').existsSync(f) ? require(f) : null; } catch (e) { console.error('patterns.js 载入失败：' + e.message); return null; } })();   // 局面计数模式（可选）
 const os = require('os');
 const { fork } = require('child_process');
 const SRC = path.join(__dirname, '..', 'src');
@@ -490,6 +491,11 @@ function worker() {
       if (g.round > job.maxRounds) { R.reason = 'cap'; break; }
       if (++guard > job.maxRounds * 6) { R.reason = 'stuck'; break; }
       const side = g.turn;
+      if (PAT) {   // 局面计数（战术部门 lab/tools/patterns.js）：轮到谁走就看谁，记每个模式亮了几个回合、第一次亮在第几回合；只读局面，不影响走法
+        if (!R.pat) R.pat = {};
+        for (const k in PAT) { let on = false; try { on = !!PAT[k](g.S, side); } catch (e) { R.patErr = (R.patErr || 0) + 1; }
+          if (!on) continue; const x = R.pat[k] || (R.pat[k] = { r: 0, b: 0, first: {} }); x[side]++; if (x.first[side] == null) x.first[side] = g.round; }
+      }
       if (BF.CFG.beishui && BF.CFG.beishui.fewer && BF.CFG.beishui.fewer[side] && R.avail[side] == null && !g.S.used.art[side] && (side === 'b' || g.S.dead.r.length)) {
         const c = { r: 0, b: 0 }; for (const row of g.S.board) for (const p of row) if (p && (p.t === 'r' || p.t === 'n' || p.t === 'c')) c[p.s]++;
         const ML = BF.CFG.beishui.maxLeft && BF.CFG.beishui.maxLeft[side];
