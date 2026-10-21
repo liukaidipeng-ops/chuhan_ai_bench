@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1hn.js,candidates/release_r1.js", "pairs": 300, "seed": 60000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "r1 + BMH + UP2N=3 + UP2R=1（UP2 那层只留前 3 种升级、少算 1 层；17 万节点平均层数 4.15→5.32）对线上 r1，5 秒"}
