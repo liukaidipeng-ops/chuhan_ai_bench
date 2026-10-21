@@ -1,0 +1,1 @@
+{"match": "candidates/release_r4.js,candidates/release_r1.js", "pairs": 300, "seed": 58000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "升级胜率规则（Ham 10-21：对上一认证版本 ≥65%）：r4 直接对线上 r1，两边 5 秒"}
