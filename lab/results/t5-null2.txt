@@ -1,0 +1,8 @@
+# t5-null2（GitHub Actions 运行 39592856281）
+# 请求：{"match":"candidates/release_r1.js,candidates/release_r1.js","pairs":300,"seed":63000,"chunks":30,"args":"--level hard --budget 5000","env":{},"note":"校准第二组种子：r1 对 r1，5 秒；同时用战术部门 lab/tools/patterns.js（ba5be26）记局面计数（results 的 pat 字段）"}
+# 收到 30/30 段；出错 0 局
+新电脑得分 47.8%（600 局，300 对；95% 区间 44.8%～50.9%）
+  新电脑执汉 300 局 胜 151 和 2；执楚 300 局 胜 135 和 0
+  每对：两局全胜 38 对，一胜一负 210 对，两局全负 50 对；和棋 2 局
+  平均每步 193150 个节点
+  节奏：平均每局领先换手 0.53 次；赢家曾落后 ≥ 5 分（翻盘）的局 29.3%（598 局有记录）
