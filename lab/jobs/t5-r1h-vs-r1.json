@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1h.js,candidates/release_r1.js", "pairs": 300, "seed": 59000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "r1 + BMH（逐层加深时用上一轮的最好一步排序；17 万节点平均层数 4.15→4.44）对线上 r1，5 秒"}
