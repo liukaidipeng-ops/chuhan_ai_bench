@@ -352,6 +352,7 @@ function parseArgs(argv) {
     else if (k === '--red') o.red = v();
     else if (k === '--black') o.black = v();
     else if (k === '--budget') o.budget = +v();
+    else if (k === '--ponder-ms') o.ponderMs = +v();   // 模拟“人想棋时电脑接着算”：对打里新电脑（A）猜中对方这一步时，这一步多给这么多毫秒
     else if (k === '--jobs') o.jobs = +v();
     else if (k === '--max-rounds') o.maxRounds = +v();
     else if (k === '--open') o.open = +v();
@@ -415,6 +416,7 @@ function worker() {
     Math.random = mulberry32(job.seed * 2654435761);
     const lvl = { r: job.red, b: job.black };
     const AIS = { r: AIMAP[job.aiR], b: AIMAP[job.aiB] };
+    const PON = { pred: null, last: null };   // --ponder-ms：预想方猜的对方这一步、对方实际走的这一步
     const g = new BF.Game();
     if (ov.noArts) g.setup(T => { T.used.art = { r: 99, b: 99 }; T.used.ult = { r: 99, b: 99 }; });
     const side2 = () => ({ r: {}, b: {} });
@@ -504,7 +506,7 @@ function worker() {
       { const c = atkCount(g.S), o = side === 'r' ? 'b' : 'r'; if (R.fewEnd[side] && c[side] < c[o]) { if (R.sus[side] == null) R.sus[side] = g.round; R.susN[side]++; } }
       if (side === 'b' && R.pf && g.S.cnt.b >= g.S.fx.pf) pfEnd();
       const pre = side === 'b' && !R.pf ? { s: +neutral(g.S).toFixed(2), m: matDiff(g.S) } : null;
-      if (g.status && g.status.mustPass) { const info = g.apply({ k: 'pass' }); if (!info) throw new Error('pass 失败'); record({ k: 'pass' }, info, side); R.plies++; sample(); cand = null; continue; }
+      if (g.status && g.status.mustPass) { if (PON.pred != null && (side === 'r' ? job.aiR : job.aiB) !== job.ponderKey) PON.last = 'pass'; const info = g.apply({ k: 'pass' }); if (!info) throw new Error('pass 失败'); record({ k: 'pass' }, info, side); R.plies++; sample(); cand = null; continue; }
       const pk = POS && R.plies >= job.open + 2 && !BF.ai.inCheck(g.S, side) ? TUNE.pack(g.S) : null;
       const t0 = Date.now();
       let L = R.plies < job.open ? 'open' : lvl[side];
@@ -513,7 +515,11 @@ function worker() {
         if (left && g.merit[side] >= U.cost - 7) L += 'Save';
       }
       const AI = R.plies < job.open && AIMAP.O ? AIMAP.O : AIS[side];
-      const seq = OPENSEQ && R.plies < OPENSEQ.length ? JSON.parse(JSON.stringify(OPENSEQ[R.plies])) : await AI.think(BF.cloneState(g.S), L);
+      const pon = job.ponderKey && (side === 'r' ? job.aiR : job.aiB) === job.ponderKey && R.plies >= job.open && L === 'hard';
+      const hit = pon && PON.pred != null && PON.pred === PON.last;
+      if (pon) { R.ponder = R.ponder || { n: 0, hit: 0 }; R.ponder.n++; if (hit) R.ponder.hit++; }
+      const b0 = AI.LEVELS.hard.budget; if (hit) AI.LEVELS.hard.budget = b0 + job.ponderMs;   // 猜中：人想棋的那段时间电脑也在算，等效于这一步多算 ponderMs
+      let seq; try { seq = OPENSEQ && R.plies < OPENSEQ.length ? JSON.parse(JSON.stringify(OPENSEQ[R.plies])) : await AI.think(BF.cloneState(g.S), L); } finally { if (hit) AI.LEVELS.hard.budget = b0; }
       const dt = Date.now() - t0; R.ms += dt; if (dt > R.msMax) R.msMax = dt;
       const st = OPENSEQ && R.plies < OPENSEQ.length ? null : AI.think.last; if (st && st.nodes != null) { R.nodes = (R.nodes || 0) + st.nodes; R.nodeMoves = (R.nodeMoves || 0) + 1; }
       if (!seq.length) { let why = ''; try { why = `（${side === 'r' ? '汉' : '楚'}方，第 ${g.round} 回合，${BF.ai.inCheck(g.S, side) ? '被将军' : '没被将军'}，普通行动 ${BF.ai.expand(g.S).length} 种，破釜 / 背水组合 ${side === 'b' && !g.S.used.art.b && BF.ai.pofuPairs ? BF.ai.pofuPairs(g.S).length : 0} 种）`; } catch (e) { why = '（' + e.message + '）'; } throw new Error('电脑没有给出行动' + why); }
@@ -535,6 +541,12 @@ function worker() {
       if (job.stopAfterRevive && R.rev) { R.reason = 'probe'; R.plies++; break; }   // 探针：召回那一刻就停
       { const c = atkCount(g.S), o = side === 'r' ? 'b' : 'r'; R.fewEnd[side] = c[side] < c[o]; }
       if (pre && seq.some(a => a.k === 'art' && a.steps)) R.pf = { round: g.round, s0: pre.s, m0: pre.m, s1: +neutral(g.S).toFixed(2), m1: matDiff(g.S), lockTo: g.S.fx.pf };
+      if (job.ponderKey) {
+        if ((side === 'r' ? job.aiR : job.aiB) === job.ponderKey) {   // 预想方刚走完：用很少的计算猜对方这一步（3 万节点），等对方走了再对答案
+          PON.pred = null;
+          if (pon && !g.result && !(g.status && g.status.mustPass)) { const X = AIS[side]; X.LEVELS.pq = { ...X.LEVELS.hard, nodes: 30000, budget: 1e9, noise: 0, dyn: 0 }; try { PON.pred = JSON.stringify(await X.think(BF.cloneState(g.S), 'pq')); } catch (e) { PON.pred = null; } }
+        } else PON.last = JSON.stringify(seq);
+      }
       R.plies++;
       sample();
     }
@@ -638,7 +650,7 @@ async function run(o) {
     ais = { A: resolveAI(o.match[0]), B: resolveAI(o.match[1]) };
     if (!o.sprt) o.sprt = [-30, 10];
     // 每个种子两局：A 执汉一局、A 执楚一局
-    for (let i = 0; i < Math.ceil(o.games / 2); i++) for (const flip of [false, true]) jobs.push({ seed: o.seed + i, flip, aiR: flip ? 'B' : 'A', aiB: flip ? 'A' : 'B', red: o.red || o.level, black: o.black || o.level, maxRounds: o.maxRounds, open: o.open, saveUlt: o.saveUlt, dumpPos: !!o.dumpPos });
+    for (let i = 0; i < Math.ceil(o.games / 2); i++) for (const flip of [false, true]) jobs.push({ seed: o.seed + i, flip, ponderMs: o.ponderMs || 0, ponderKey: o.ponderMs ? 'A' : null, aiR: flip ? 'B' : 'A', aiB: flip ? 'A' : 'B', red: o.red || o.level, black: o.black || o.level, maxRounds: o.maxRounds, open: o.open, saveUlt: o.saveUlt, dumpPos: !!o.dumpPos });
   } else {
     ais = { R: resolveAI(o.aiR || o.ai), B: resolveAI(o.aiB || o.ai) };
     const seeds = o.seedlist || []; if (!o.seedlist) for (let i = 0; i < o.games; i++) seeds.push(o.seed + i);
