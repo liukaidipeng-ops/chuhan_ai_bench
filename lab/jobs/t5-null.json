@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1.js,candidates/release_r1.js", "pairs": 300, "seed": 61000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "校准：r1 对 r1（同一个电脑），5 秒；该落在 50% 附近（46～54%），对打器才可信（战术部门 tac 建议）"}
