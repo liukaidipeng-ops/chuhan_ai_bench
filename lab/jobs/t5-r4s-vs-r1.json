@@ -1,0 +1,1 @@
+{"match": "candidates/release_r4s.js,candidates/release_r1.js", "pairs": 300, "seed": 58000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "r4 + 引擎提速 1.48 倍（按用时 ×1.48 等效）对线上 r1，5 秒"}
