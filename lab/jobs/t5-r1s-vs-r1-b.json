@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1s.js,candidates/release_r1.js", "pairs": 300, "seed": 64000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "第二组种子确认提速（第九节第 1 条：上线结论要两组种子）：r1 + 引擎提速 1.48 倍（用时 ×1.48 等效）对 r1，5 秒"}

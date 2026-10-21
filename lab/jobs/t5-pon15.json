@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1.js,candidates/release_r1.js", "pairs": 300, "seed": 65000, "chunks": 30, "args": "--level hard --budget 5000 --ponder-ms 15000", "env": {}, "note": "tac-008 ②：模拟人每步想 15 秒，新电脑（A）猜中对方这一步时多算 15 秒；r1 对 r1，5 秒"}
