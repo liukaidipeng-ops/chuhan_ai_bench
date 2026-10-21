@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1.js,candidates/release_r1.js", "pairs": 300, "seed": 63000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "校准第二组种子：r1 对 r1，5 秒；同时用战术部门 lab/tools/patterns.js（ba5be26）记局面计数（results 的 pat 字段）"}
