@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1t6.js,candidates/release_r1.js", "pairs": 300, "seed": 62000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "tac-006：r1 + T6 估值特征（权重 1.5）对线上 r1，5 秒；<52% 停（排在校准 t5-null 之后，校准不在 46～54% 则作废）"}
