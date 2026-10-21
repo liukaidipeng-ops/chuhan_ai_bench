@@ -1,0 +1,17 @@
+g13 T6:b×1(首#66)  T6near:b×15(首#48)  chendi:r×10(首#90)  gongjiao_kill:b×27(首#81)  gongjiao_kill:r×11(首#27)
+g14 T6:r×1(首#71)  T6near:r×18(首#47)  chendi:r×5(首#58)  gongjiao_kill:b×13(首#19)  gongjiao_kill:r×5(首#58)  gongjiao_up:r×2(首#69)
+g15 chendi:r×8(首#111)  gongjiao_kill:b×13(首#36)  gongjiao_kill:r×25(首#9)
+g16 T6:r×15(首#87)  T6near:r×22(首#79)  chendi:b×38(首#23)  gongjiao_kill:b×26(首#34)  gongjiao_kill:r×2(首#51)
+g17 T6:b×4(首#106)  T6:r×19(首#125)  T6near:b×29(首#91)  T6near:r×20(首#124)  gongjiao_kill:b×5(首#31)
+g18 T6:r×14(首#49)  T6near:r×39(首#37)  chendi:b×11(首#30)  chendi:r×13(首#46)  gongjiao_kill:b×15(首#30)  gongjiao_kill:r×5(首#114)
+g19 chendi:b×10(首#26)  gongjiao_kill:b×5(首#29)  gongjiao_kill:r×3(首#21)
+g20 chendi:b×2(首#56)  gongjiao_kill:b×4(首#53)
+g21 T6:b×7(首#75)  T6:r×9(首#136)  T6near:b×19(首#68)  T6near:r×28(首#124)  chendi:r×8(首#19)  gongjiao_kill:b×13(首#78)  gongjiao_kill:r×6(首#19)
+g22 T6:b×2(首#139)  T6near:b×13(首#126)  T6near:r×6(首#137)  chendi:r×17(首#47)  gongjiao_kill:b×4(首#28)  gongjiao_kill:r×5(首#59)  gongjiao_up:r×3(首#50)
+g23 T6:r×21(首#56)  T6near:r×46(首#56)  chendi:b×18(首#49)  gongjiao_kill:b×17(首#49)  gongjiao_kill:r×3(首#67)  gongjiao_up:b×3(首#73)
+g24 T6:r×46(首#100)  T6near:b×16(首#114)  T6near:r×70(首#76)  chendi:r×9(首#131)  gongjiao_kill:r×32(首#21)
+g25 T6:r×4(首#124)  T6near:b×3(首#132)  T6near:r×22(首#108)  chendi:b×44(首#59)  chendi:r×1(首#22)  gongjiao_kill:b×41(首#31)
+g26 T6:r×4(首#77)  T6near:r×11(首#65)  chendi:r×1(首#24)  gongjiao_kill:b×3(首#33)  gongjiao_kill:r×3(首#38)  gongjiao_up:b×2(首#68)
+g27 T6:r×6(首#83)  T6near:r×28(首#69)  chendi:r×4(首#107)  gongjiao_kill:r×19(首#21)
+出现过的局数： T6:b 4，T6:r 10，T6near:b 6，T6near:r 11，chendi:b 6，chendi:r 10，gongjiao_kill:b 13，gongjiao_kill:r 12，gongjiao_up:b 2，gongjiao_up:r 2
+每次调用平均 13.1 微秒（13910 次）
