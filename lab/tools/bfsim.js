@@ -518,8 +518,11 @@ function worker() {
       const pon = job.ponderKey && (side === 'r' ? job.aiR : job.aiB) === job.ponderKey && R.plies >= job.open && L === 'hard';
       const hit = pon && PON.pred != null && PON.pred === PON.last;
       if (pon) { R.ponder = R.ponder || { n: 0, hit: 0 }; R.ponder.n++; if (hit) R.ponder.hit++; }
-      const b0 = AI.LEVELS.hard.budget; if (hit) AI.LEVELS.hard.budget = b0 + job.ponderMs;   // 猜中：人想棋的那段时间电脑也在算，等效于这一步多算 ponderMs
-      let seq; try { seq = OPENSEQ && R.plies < OPENSEQ.length ? JSON.parse(JSON.stringify(OPENSEQ[R.plies])) : await AI.think(BF.cloneState(g.S), L); } finally { if (hit) AI.LEVELS.hard.budget = b0; }
+      // 猜中：人想棋的那段时间电脑也在算，等效于这一步多算 ponderMs。预算可能是 getter（提速等效 ×1.48 的候选，读出来已经乘过）：
+      //   先量出 getter 的倍数，写回时除掉，免得 ponderMs 也被乘一次（10-22 修正）
+      const HL = AI.LEVELS.hard, b0 = HL.budget; let k = 1;
+      if (hit) { HL.budget = 1000; k = HL.budget / 1000; HL.budget = (b0 + job.ponderMs) / k; R.ponderBudget = Math.round(HL.budget); }
+      let seq; try { seq = OPENSEQ && R.plies < OPENSEQ.length ? JSON.parse(JSON.stringify(OPENSEQ[R.plies])) : await AI.think(BF.cloneState(g.S), L); } finally { if (hit) HL.budget = b0 / k; }
       const dt = Date.now() - t0; R.ms += dt; if (dt > R.msMax) R.msMax = dt;
       const st = OPENSEQ && R.plies < OPENSEQ.length ? null : AI.think.last; if (st && st.nodes != null) { R.nodes = (R.nodes || 0) + st.nodes; R.nodeMoves = (R.nodeMoves || 0) + 1; }
       if (!seq.length) { let why = ''; try { why = `（${side === 'r' ? '汉' : '楚'}方，第 ${g.round} 回合，${BF.ai.inCheck(g.S, side) ? '被将军' : '没被将军'}，普通行动 ${BF.ai.expand(g.S).length} 种，破釜 / 背水组合 ${side === 'b' && !g.S.used.art.b && BF.ai.pofuPairs ? BF.ai.pofuPairs(g.S).length : 0} 种）`; } catch (e) { why = '（' + e.message + '）'; } throw new Error('电脑没有给出行动' + why); }
