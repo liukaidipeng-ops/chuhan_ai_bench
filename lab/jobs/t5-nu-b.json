@@ -1,0 +1,1 @@
+{"match": "candidates/release_r2nu.js,candidates/release_r2nu.js", "pairs": 300, "seed": 74000, "chunks": 30, "args": "--level hard --budget 5000 --set ultimates.on=false", "env": {}, "note": "去掉鸿门宴、四面楚歌后的平衡（Ham 10-22）：线上电脑（终极兵法关了不攒钱）自己对自己，看汉楚胜率；对照是终极兵法开着的 t5-null、t5-null2；种子组 b"}

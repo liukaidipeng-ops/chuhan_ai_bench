@@ -38,7 +38,7 @@
       hujia: { cooldown: 4 },
     },
     generalArts: { fromRound: 1, xiaohe: { usesPerGame: 1 }, pofu: { usesPerGame: 1, steps: 2, mayEndInCheck: false, skillLockRounds: 3 } },
-    ultimates: { cost: 20, hongmen: { usesPerGame: 1, rounds: 3 }, simian: { usesPerGame: 1, rounds: 2, radius: 2, minPiecesInRadius: 3 } },
+    ultimates: { on: true, cost: 20, hongmen: { usesPerGame: 1, rounds: 3 }, simian: { usesPerGame: 1, rounds: 2, radius: 2, minPiecesInRadius: 3 } },
     longCheckLimit: 3,
     // 背水一战（on = true 时代替楚方的破釜沉舟；2026-10-05 起默认开，on = false 回到破釜沉舟）。开着时两边的主帅兵法都只给弱势方用：
     //   轮到自己时，己方车马炮最多还剩 maxLeft 枚、而且比对方的车马炮少，才能用——楚方的背水一战、汉方的召回良将都看这一条（每局一次照旧）；
@@ -497,7 +497,7 @@
       S.used.art[side]++;
     } else if (a.k === 'ult') {
       const U = CFG_CUR.ultimates;
-      if (S.merit[side] < U.cost || S.used.ult[side] >= U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) return null;
+      if (U.on === false || S.merit[side] < U.cost || S.used.ult[side] >= U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) return null;
       if (side === 'b' && smActive(S)) return null;
       if (side === 'r') {
         const k = findKing(S.board, 'b'); if (!k) return null;
@@ -636,7 +636,7 @@
     if (!S.freeUsed) {
       if (side === 'r' && artOpen(S) && S.used.art.r < CFG_CUR.generalArts.xiaohe.usesPerGame) { const up = R6() && R6().reviveUp; for (const { t, ...a } of reviveActs(S)) { push(a); if (up) push({ ...a, up: true }); } }   // r6：召回 + 当回合升级
       const U = CFG_CUR.ultimates;
-      if (S.merit[side] >= U.cost && S.used.ult[side] < U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) push({ k: 'ult' });
+      if (U.on !== false && S.merit[side] >= U.cost && S.used.ult[side] < U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) push({ k: 'ult' });
     }
     if (!out.length) push({ k: 'pass' });
     return out;
@@ -666,7 +666,7 @@
     if (!capsOnly && !S.freeUsed) {
       if (side === 'r' && artOpen(S) && S.used.art.r < CFG_CUR.generalArts.xiaohe.usesPerGame) { const up = R6() && R6().reviveUp && !S.upgraded; for (const { t, ...a } of reviveActs(S)) { out.push({ a, p: null, q: null, art: t }); if (up) out.push({ a: { ...a, up: true }, p: null, q: null, art: t }); } }   // r6：召回 + 当回合升级
       const U = CFG_CUR.ultimates;
-      if (S.merit[side] >= U.cost && S.used.ult[side] < U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) out.push({ a: { k: 'ult' }, p: null, q: null, ult: true });
+      if (U.on !== false && S.merit[side] >= U.cost && S.used.ult[side] < U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) out.push({ a: { k: 'ult' }, p: null, q: null, ult: true });
     }
     return out;
   }
@@ -801,7 +801,7 @@
   function ultReady(S) {
     const side = S.turn, U = CFG_CUR.ultimates;
     if (S.freeUsed) return false;
-    if (S.merit[side] < U.cost || S.used.ult[side] >= U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) return false;
+    if (U.on === false || S.merit[side] < U.cost || S.used.ult[side] >= U[side === 'r' ? 'simian' : 'hongmen'].usesPerGame) return false;
     return !!attempt(S, { k: 'ult' });
   }
   // noUp：不算“先升级再走”（upEscape 里升完级再查一遍时用）

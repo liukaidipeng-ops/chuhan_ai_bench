@@ -1,1 +1,1 @@
-{"match": "candidates/release_r1sk.js,candidates/release_r1s.js", "pairs": 300, "seed": 71000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "小步上线候选：线上（r1+提速）加危险延伸不叠加（KDX=0，g30 第 39 条层数塌陷）对线上同条件（两边都提速、都不预想），种子组 a"}
+{"match": "candidates/release_r1sk.js,candidates/release_r1s.js", "pairs": 300, "seed": 71000, "chunks": 30, "args": "--level hard --budget 5000", "env": {}, "note": "小步上线候选：线上（r1+提速）加危险延伸不叠加（KDX=0，g30 第 39 条层数塌陷）对线上同条件（两边都提速、都不预想），种子组 a（10-22 和去掉终极兵法的平衡测试同一提交重排）"}
