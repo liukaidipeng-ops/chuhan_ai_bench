@@ -1,0 +1,1 @@
+{"match": "candidates/release_r6.js,candidates/release_r1.js", "pairs": 300, "seed": 81000, "chunks": 30, "args": "--level hard --budget 5000 --ponder-ms 15000", "env": {}, "note": "r6 升级对打（认证规则 v1 第九节第 3 条，≥60%）：r6 + 预想 15 秒 对 认证版 r1，两边 5 秒，种子组 a。2026-10-24 lead 排；r6 = r4 + ATK1（第 1 层对方升级攻击变大）+ 平局优先吃子，K12-1 已 3/3"}
