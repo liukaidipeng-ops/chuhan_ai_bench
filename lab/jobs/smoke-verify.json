@@ -1,0 +1,1 @@
+{"match": "candidates/release_r1.js,candidates/release_r1.js", "pairs": 2, "seed": 61000, "chunks": 1, "args": "--level hard --budget 5000", "env": {}, "note": "管线验证"}
