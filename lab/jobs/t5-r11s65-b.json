@@ -1,0 +1,1 @@
+{"match": "candidates/release_r11s.js,candidates/release_r1.js", "pairs": 150, "chunks": 20, "seed": 88000, "args": "--level hard --budget 6500 --ponder-ms 15000", "env": {}, "note": "B 组第二组种子（探索口径，150 对）：r11s（getter+6.5s+预想）对认证版 r1 的 6.5 秒基准。"}

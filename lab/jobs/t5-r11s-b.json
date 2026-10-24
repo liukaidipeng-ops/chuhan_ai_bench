@@ -1,0 +1,1 @@
+{"match": "candidates/release_r11s.js,candidates/release_r1.js", "pairs": 150, "chunks": 20, "seed": 86000, "args": "--level hard --budget 5000", "env": {}, "note": "A 组第二组种子（探索口径，150 对）：同条件 + 引擎增量。r11s 对认证版 r1，两边 5 秒、都不带预想。"}

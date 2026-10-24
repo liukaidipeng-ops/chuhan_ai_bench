@@ -1,0 +1,1 @@
+{"match": "candidates/release_r11s.js,candidates/live-20261024.js", "pairs": 150, "chunks": 20, "seed": 92000, "args": "--level hard --budget 6500 --ponder-ms 15000", "env": {}, "note": "【回答用户 60–65% 的主测量·第二组种子】r11s（6.5 秒+预想+提速 getter）对当前线上 AI 文件（live-20261024.js，blob bc4e6313），旧侧同 6.5 秒基准。探索口径 150 对。"}

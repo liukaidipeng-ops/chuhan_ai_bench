@@ -1,0 +1,1 @@
+{"match": "candidates/release_r11s.js,candidates/release_r1.js", "pairs": 150, "chunks": 20, "seed": 87000, "args": "--level hard --budget 6500 --ponder-ms 15000", "env": {}, "note": "B 组（探索口径，150 对）：新配置（r11s：引擎增量+6.5 秒+预想 15 秒）对认证版 r1 的 6.5 秒基准；budget 两边同给 6500，预想按 bfsim 规则只给 match[0]。r11s 的预算语义是 max(base,min(base×k,cap))——6.5s 档不会被 5000 砍回（r10s 的 bug 已修）。"}
