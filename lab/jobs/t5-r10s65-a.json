@@ -1,0 +1,1 @@
+{"match": "candidates/release_r10s.js,candidates/release_r1.js", "pairs": 150, "chunks": 20, "seed": 87000, "args": "--level hard --budget 6500 --ponder-ms 15000", "env": {}, "note": "B 组（探索口径，150 对）：新配置（r10s：引擎增量+6.5 秒+预想 15 秒）对认证版 r1 的 6.5 秒基准；args 的 budget 两边同给 6500，预想按 bfsim 规则只给 match[0]。预期 59.5～65%；回答“新霸王对认证版 r1”的增量参考（对现线上口径见 t5-r10s-live-a/b）。"}
