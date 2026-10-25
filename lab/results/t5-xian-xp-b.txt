@@ -1,0 +1,8 @@
+# t5-xian-xp-b（GitHub Actions 运行 40217356867）
+# 请求：{"match":"candidates/xian-xparam.js,candidates/release_r13b.js","pairs":150,"chunks":20,"seed":124000,"args":"--level hard --budget 3000","env":{},"note":"兵仙 Phase1a·XPARAM 第二组种子（xian-xparam.js vs r13b 霸王）。"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 59.7%（300 局，150 对；95% 区间 54.2%～65.1%）
+  新电脑执汉 150 局 胜 91 和 0；执楚 150 局 胜 88 和 0
+  每对：两局全胜 52 对，一胜一负 75 对，两局全负 23 对；和棋 0 局
+  平均每步 276494 个节点
+  节奏：平均每局领先换手 0.45 次；赢家曾落后 ≥ 5 分（翻盘）的局 29.0%（300 局有记录）
