@@ -1,0 +1,1 @@
+{"match": "candidates/release_r12.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 104000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径·动态档第二组种子（r12 vs live-prod，--budget 3000）。"}

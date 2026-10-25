@@ -1,0 +1,1 @@
+{"match": "candidates/release_r12.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 103000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径·动态档（r12）：新侧 release_r12（r11 + 动态预算曲线：1–5 回合 3000ms、6→16 回合线性升到 ≈6500ms、≥16 回合 6500ms；带复杂度修正）对旧侧 live-prod（线上原样 3000ms、dyn 2.7）。job 传 --budget 3000 让旧侧=真线上；新侧文件内动态放大。两边都不带预想（对称）。回答“动态档对真线上”的胜率。"}
