@@ -1,0 +1,8 @@
+# t5-r11s-live-a（GitHub Actions 运行 40121493295）
+# 请求：{"match":"candidates/release_r11s.js,candidates/live-20261024.js","pairs":150,"chunks":20,"seed":91000,"args":"--level hard --budget 6500 --ponder-ms 15000","env":{},"note":"【回答用户 60–65% 的主测量】新配置（r11s = r11/r10-lite + 提速 getter，6.5 秒 + 预想 15 秒）对**当前线上 AI 文件**（live-20261024.js = game-repo source/src/bfai.js，blob bc4e6313），旧侧同 6.5 秒基准（budget 两边同给；预想按 bfsim 规则只给 match[0]）。预算语义已修成 max(base,min(base×k,cap))，6.5s 档不会被 5000 砍。探索口径 150 对，接近 60% 再扩 600 组。"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 64.7%（300 局，150 对；95% 区间 59.6%～69.7%）
+  新电脑执汉 150 局 胜 104 和 0；执楚 150 局 胜 90 和 0
+  每对：两局全胜 58 对，一胜一负 78 对，两局全负 14 对；和棋 0 局
+  平均每步 353235 个节点
+  节奏：平均每局领先换手 0.54 次；赢家曾落后 ≥ 5 分（翻盘）的局 28.3%（300 局有记录）
