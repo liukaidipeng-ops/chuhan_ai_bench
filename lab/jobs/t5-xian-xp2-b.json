@@ -1,0 +1,1 @@
+{"match": "candidates/xian-xp2.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 130000, "args": "--level hard --budget 3000", "env": {}, "note": "兵仙 Phase1a-v2·XPARAM v2 第二组种子（xian-xp2.js vs release_r13b）。"}

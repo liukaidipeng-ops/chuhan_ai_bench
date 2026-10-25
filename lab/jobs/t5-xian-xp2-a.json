@@ -1,0 +1,1 @@
+{"match": "candidates/xian-xp2.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 129000, "args": "--level hard --budget 3000", "env": {}, "note": "兵仙 Phase1a-v2·XPARAM v2（只放宽止损 0.8/1.0×budget、不动 minNodes）：xian-xp2.js = r13b×3 + 止损放宽，对 r13b 霸王、线上 3000 口径。Phase1a v1 只有 58.9%（x3 基线 58.4）；v2 目标 ≥61–62%。pairs150/chunks20。"}
