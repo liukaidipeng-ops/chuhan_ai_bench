@@ -1,0 +1,1 @@
+{"match": "candidates/release_r15.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 132000, "args": "--level hard --budget 3000", "env": {}, "note": "r15 vs r13b 同批直接对照第二组种子。"}

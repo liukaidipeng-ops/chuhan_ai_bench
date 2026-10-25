@@ -1,0 +1,1 @@
+{"match": "candidates/release_r15.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 131000, "args": "--level hard --budget 3000", "env": {}, "note": "r15 vs r13b 同批直接对照（测 r15 的“背水修法”是否带来真实强度）：新侧 release_r15（r13b + 背水被迫解将深搜+冻结罚分；只影响楚方）对旧侧 release_r13b（冻结默认档）。判读：≈50% → 强度与 r13b 相同，r15 的卖点是 UX（K22 3/3）+ 考卷 204/204；>55% 才算真实强度提升。同种子组下比较，避免种子组噪声。pairs150/chunks20。"}
