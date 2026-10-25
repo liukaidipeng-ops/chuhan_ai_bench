@@ -1,0 +1,1 @@
+{"match": "candidates/r11-p4500.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 96000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径档位表 P45 第二组种子：r11-p4500（有效 4500ms）对 live-prod（3000ms）。"}

@@ -1,0 +1,1 @@
+{"match": "candidates/r11-p3000.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 102000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径对照 P30 第二组种子：r11-p3000（有效 3000ms）对 live-prod（3000ms）。"}

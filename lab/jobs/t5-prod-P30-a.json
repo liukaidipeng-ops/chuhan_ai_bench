@@ -1,0 +1,1 @@
+{"match": "candidates/r11-p3000.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 101000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径对照 P30（最关键）：新侧 r11-p3000（= r11 逻辑、有效 3000ms，与线上同时间、无 getter）对旧侧 live-prod（线上原样 3000ms、dyn 2.7）。回答“不牺牲速度时，纯 AI 文件提升多少”。两边都不带预想（bfsim 只能给一侧，取对称都不带）。"}

@@ -1,0 +1,1 @@
+{"match": "candidates/r11-p4500.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 95000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径档位表 P45：新侧 r11-p4500（r11 + 预算 getter ×1.5，job --budget 3000 → 有效 4500ms ≈ 线上 1.5 倍）对旧侧 live-prod（线上原样：hard budget 3000、dyn 2.7）。两边都不带预想（生产线上新旧都有预想，bfsim 只能给一侧，故取对称的“都不带”）。pairs150/chunks20 探索口径。"}
