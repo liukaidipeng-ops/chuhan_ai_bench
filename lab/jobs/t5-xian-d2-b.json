@@ -1,0 +1,1 @@
+{"match":"candidates/xian-d2.js,candidates/release_r13b.js","pairs":150,"chunks":20,"seed":126000,"args":"--level hard --budget 3000","env":{},"note":"兵仙 Phase1b·DPNT-2 v3（2026-10-26 战术部门本地 gate 后定稿）：xian-d2.js = r13b×3 + XPARAM + DPNT-2 v3（xhard 专属：敌兵两回合内可贴脸/成杀时 预算×1.15（封顶20000）/depth+1/ALLOW 打开；触发门=L0.budget≥6000，3000ms 审计/霸王档不触发）。第二组种子（同上）。"}
