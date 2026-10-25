@@ -1,0 +1,1 @@
+{"match": "candidates/xian-xparam.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 124000, "args": "--level hard --budget 3000", "env": {}, "note": "兵仙 Phase1a·XPARAM 第二组种子（xian-xparam.js vs r13b 霸王）。"}
