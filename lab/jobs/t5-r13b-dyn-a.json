@@ -1,0 +1,1 @@
+{"match": "candidates/release_r13b.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 113000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径·r13b 保守回退版：动态预算 3000→6000 + 动态深度 8（6 回合起），对 live-prod（线上 3000/depth7）。目标接近/超过静态 4500 的 63.8%，且开局不变慢。若 r13(depth9) 因深度跑不完反而更弱，用这版。pairs150/chunks20。"}
