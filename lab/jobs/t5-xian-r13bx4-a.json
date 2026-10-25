@@ -1,0 +1,1 @@
+{"match": "candidates/r13b-x4.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 107000, "args": "--level hard --budget 3000", "env": {}, "note": "兵仙线第一批 x4：r13b-x4（基础 12000ms、后段上限 24000ms）对 r13b 霸王，判断“继续加时间”还有多少收益。"}

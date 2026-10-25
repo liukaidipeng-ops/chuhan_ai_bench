@@ -1,0 +1,1 @@
+{"match": "candidates/r13b-x3.js,candidates/release_r13b.js", "pairs": 150, "chunks": 20, "seed": 106000, "args": "--level hard --budget 3000", "env": {}, "note": "兵仙线第一批 x3 第二组种子（r13b-x3 vs r13b）。"}
