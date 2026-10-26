@@ -1,1 +1,9 @@
-{"match": "candidates/release_r16.js,candidates/release_r15main.js", "pairs": 150, "chunks": 20, "seed": 139000, "args": "--level hard --budget 3000", "env": {}, "note": "r16 vs 当前默认档同批直接对照（验“只修 T5、不加戏”）：新侧 release_r16（= r15 部署档 main+r13b+背水UX + T5 窄修，102291B）对旧侧 release_r15main（= r15 部署档原样，100936B；与 r16 同基底，唯一差异=T5 窄修）。判读：≈50%（CI 含 50）→ 只修了 T5、整体强度不变；显著偏离需查副作用。注意：不要用 lab 的 release_r15.js（r13b 基底，会混入 main 能力差异）。pairs150/chunks20。"}
+{
+  "match": "candidates/release_r16.js,candidates/release_r15main.js",
+  "pairs": 150,
+  "chunks": 20,
+  "seed": 139000,
+  "args": "--level hard --budget 3000",
+  "env": {},
+  "note": "r16 vs 当前默认档同批直接对照（验“只修 T5、不加戏”）：新侧 release_r16（= r15 部署档 main+r13b+背水UX + T5 窄修，102291B）对旧侧 release_r15main（= r15 部署档原样，100936B；与 r16 同基底，唯一差异=T5 窄修）。判读：≈50%（CI 含 50）→ 只修了 T5、整体强度不变；显著偏离需查副作用。注意：不要用 lab 的 release_r15.js（r13b 基底，会混入 main 能力差异）。pairs150/chunks20。 [云批修正版 2026-10-26 22:58：对手文件 release_r15main；本文件仅更新备注以重新触发 run]"
+}

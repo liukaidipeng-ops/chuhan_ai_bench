@@ -1,1 +1,9 @@
-{"match": "candidates/release_r16.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 137000, "args": "--level hard --budget 3000", "env": {}, "note": "生产口径·r16（r15 部署档 + T5 窄修：时间制霸王档、第5–7回合、敌 lv≥2 兵进我方半场距帅6–7 → 预算×2封顶6000 + 迭代跑到 depth5；无全局评估项、无 ALLOW 改动，其它行为与 r15 一致）对真线上 live-prod（线上原样 3000）。对照 r15 的 64.9%；目标：强度不劣于 r15（≈50% 直接对打另验）+ T5 类防守修好。pairs150/chunks20。"}
+{
+  "match": "candidates/release_r16.js,candidates/live-prod.js",
+  "pairs": 150,
+  "chunks": 20,
+  "seed": 137000,
+  "args": "--level hard --budget 3000",
+  "env": {},
+  "note": "生产口径·r16（r15 部署档 + T5 窄修：时间制霸王档、第5–7回合、敌 lv≥2 兵进我方半场距帅6–7 → 预算×2封顶6000 + 迭代跑到 depth5；无全局评估项、无 ALLOW 改动，其它行为与 r15 一致）对真线上 live-prod（线上原样 3000）。对照 r15 的 64.9%；目标：强度不劣于 r15（≈50% 直接对打另验）+ T5 类防守修好。pairs150/chunks20。 [云批修正版 2026-10-26 22:58：对手文件 release_r15main；本文件仅更新备注以重新触发 run]"
+}
