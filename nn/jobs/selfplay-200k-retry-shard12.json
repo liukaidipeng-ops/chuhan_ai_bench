@@ -1,21 +1,21 @@
 {
-    "tag":  "200k",
-    "candidate":  "lab/candidates/release_r15main.js",
-    "engine":  "lab/src",
-    "positions":  10000,
-    "indices":  [
-                    12
-                ],
-    "seed":  20261026,
-    "seedStride":  10000,
-    "depth":  3,
-    "q":  4,
-    "open":  4,
-    "maxRounds":  150,
-    "audit":  12,
-    "jobs":  4,
-    "outPrefix":  "data/selfplay-200k",
-    "artifactPrefix":  "nn-selfplay-200k",
-    "pad":  2,
-    "note":  "NN 200k 补跑 shard12（原 run #40374070103 中该 shard 被 runner 取消）；只跑 indices:[12]"
+  "tag": "200k",
+  "candidate": "lab/candidates/release_r15main.js",
+  "engine": "lab/src",
+  "positions": 10000,
+  "indices": [
+    12
+  ],
+  "seed": 20261026,
+  "seedStride": 10000,
+  "depth": 3,
+  "q": 4,
+  "open": 4,
+  "maxRounds": 150,
+  "audit": 12,
+  "jobs": 4,
+  "outPrefix": "data/selfplay-200k",
+  "artifactPrefix": "nn-selfplay-200k",
+  "pad": 2,
+  "note": "NN 200k 补跑 shard12（原 run #40374070103 中该 shard 被 runner 取消）；只跑 indices:[12] [retry2 2026-10-27：上次 90min 超时被取消，timeout 提到 150min 重跑]"
 }
