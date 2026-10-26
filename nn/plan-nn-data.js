@@ -84,11 +84,14 @@ for (const f of files) {
     artifactPrefix: job.artifactPrefix || `nn-selfplay-${tag}`,
   };
   if (!base.candidate) { console.error(`[nn-plan] ${f} 缺 candidate`); process.exit(1); }
-  for (let i = 0; i < shards; i++) {
+  // indices 可选：显式指定分片下标（用于单 shard 重试/补跑），如 "indices":[12]
+  const indices = Array.isArray(job.indices) ? job.indices.map(Number) : null;
+  const shardIdxs = indices || Array.from({ length: shards }, (_, k) => k);
+  for (const i of shardIdxs) {
     const shard = pad > 0 ? String(i).padStart(pad, '0') : String(i);
     include.push({ ...base, index: i, shard, seed: base.seed + i * stride, out: `${base.outPrefix}-shard${shard}`, artifact: `${base.artifactPrefix}-shard${shard}` });
   }
-  console.log(`[nn-plan] ${f}: tag=${tag} shards=${shards} positions/shard=${base.positions} seed0=${base.seed} stride=${stride} total≈${shards * base.positions} out=${base.outPrefix}-shard<NN> artifact=${base.artifactPrefix}-shard<NN>`);
+  console.log(`[nn-plan] ${f}: tag=${tag} shards=${shardIdxs.length}${indices ? ' (indices ' + indices.join(',') + ')' : ''} positions/shard=${base.positions} seed0=${base.seed} stride=${stride} total≈${shardIdxs.length * base.positions} out=${base.outPrefix}-shard<NN> artifact=${base.artifactPrefix}-shard<NN>`);
 }
 if (!include.length) { setOut('count', '0'); process.exit(0); }
 setOut('matrix', JSON.stringify({ include }));
