@@ -1,0 +1,19 @@
+{
+    "tag":  "smoke",
+    "candidate":  "lab/candidates/release_r15main.js",
+    "engine":  "lab/src",
+    "positions":  1000,
+    "shards":  1,
+    "seed":  20261026,
+    "seedStride":  10000,
+    "depth":  3,
+    "q":  4,
+    "open":  4,
+    "maxRounds":  150,
+    "audit":  12,
+    "jobs":  4,
+    "outPrefix":  "data/selfplay-smoke",
+    "artifactPrefix":  "nn-selfplay-smoke",
+    "pad":  2,
+    "note":  "NN 云端 data-gen 冒烟：1 shard x 1000 局面，教师 release_r15main（部署档 r15）；验证 artifact/格式/速度"
+}

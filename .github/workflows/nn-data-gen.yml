@@ -1,0 +1,87 @@
+# ===== NN 自对弈数据生成（云端 20 万局面，隔离管线）=====
+# 触发：push 改动 nn/jobs/**.json（每批一个 job 文件）；或 workflow_dispatch 指定 job 文件。
+# 隔离：只碰 nn/**，不触发 lab-match（lab/jobs/**）；独立 concurrency 组 nn-data-gen。
+# 产物：每 shard 一个 artifact `nn-selfplay-200k-shard<NN>`（pos.bin/games.jsonl/meta.json/audit.jsonl，
+#       保留 1 天）；全部下载解压后可本地 `node nn/merge-shards.js --out data/selfplay-200k` 合并。
+# 说明：云端只生成数据，不训练、不对打、不改 lab/src。
+name: NN 自对弈数据生成
+on:
+  push:
+    branches: [claude/chuhan-xiangqi-chat-x9kpy8]
+    paths: ['nn/jobs/**']
+  workflow_dispatch:
+    inputs:
+      job:
+        description: '要跑的 job 文件（相对仓库根，如 nn/jobs/selfplay-smoke.json）'
+        required: true
+        default: 'nn/jobs/selfplay-smoke.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nn-data-gen
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      count: ${{ steps.plan.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 读 job 并展开分片 matrix
+        id: plan
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          NN_JOB: ${{ inputs.job }}
+        run: node nn/plan-nn-data.js
+
+  shard:
+    needs: plan
+    if: ${{ needs.plan.outputs.count != '0' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 生成自对弈数据分片（教师固定 depth，多进程）
+        run: |
+          set -euo pipefail
+          node nn/make-selfplay.js \
+            --ai "${{ matrix.candidate }}" \
+            --engine "${{ matrix.engine }}" \
+            --positions "${{ matrix.positions }}" \
+            --depth "${{ matrix.depth }}" \
+            --q "${{ matrix.q }}" \
+            --open "${{ matrix.open }}" \
+            --max-rounds "${{ matrix.maxRounds }}" \
+            --audit "${{ matrix.audit }}" \
+            --seed "${{ matrix.seed }}" \
+            --jobs "${{ matrix.jobs }}" \
+            --out "${{ matrix.out }}"
+      - name: 上传分片 artifact（失败也上传已落盘部分）
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.out }}.pos.bin
+            ${{ matrix.out }}.games.jsonl
+            ${{ matrix.out }}.meta.json
+            ${{ matrix.out }}.audit.jsonl
+          retention-days: 1
+          if-no-files-found: warn
