@@ -426,3 +426,9 @@ Balance 诊断里建议的补充题（起点第 8–10 回合、楚已被压但�
 - **G1 207/207**（双方独立跑）；**G4-A**：实29 3/3、K22 3/3、K20-1 3/3；**G5**：T5 修复 5.1–5.2s/depth5，云 SLOW 通过；K21 已按 r14 专项退役。
 - **判定**：r16 通过 release-gate（G2 以“同强度替换”口径：63.6% 与 r15 64.9% 的 CI 重叠、直接对打 48.4% CI 含 50），**默认档可由 r15 切 r16**；回退档保留 `bfai-r15`。release-gate 表由 Balance 更新（lab commit `d6a7288`→`0c003dd`；CLOUD-RESULTS-INDEX 已记该轮）。
 - 说明（口径）：G2 字面“点估计 ≥ r15 64.9%”对 r16 是 63.6%（低 1.3pp，CI 重叠）；按 gate G2 附“同批直接对打 ≈50% 视为同强度”执行，且本轮卖点是 T5 修复而非强度提升，故按“同强度 + 修 T5”收口；若要求点估计严格 ≥，则默认保持 r15、r16 作为候选。
+
+### r16 上线信息与仓库同步（2026-10-27 02:0x）
+
+- **r16 上线（Balance 核对）**：版本 `2026.10.27-b18fcd`、部署 head `24e9a047`、release-gate lab commit `30dae3f6`；用户 r16 反馈优先。
+- **game-repo 同步**：ops 已推 `ai/train-20261024` 至 head **`f8f76618`**（含 `--opp`、实29、K23 撤题；历史由 ops 重写，本地已 `reset --hard` 对齐，内容 diff 为 0）。远端另含 **CI plan workflow**（`.github/workflows/plan-exam.yml`、`ci/plan/request.json`、`source/tools/variants/ci/*`）——以后云端 plan 复核可直接推 `ci/plan/**` 触发。
+- **K24 复活待 lead 拍板**：工具已就绪（`--opp=`）；复活时按 Balance 建议：先用 r15main/r1 当攻击型对手复现压力 → 再换脚本化“连续升兵”对手文件，题面记录 opp 文件名+SHA256+seeds，并同题跑“opp=main / opp=用户模拟”两版留档。
