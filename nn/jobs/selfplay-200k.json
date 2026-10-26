@@ -1,0 +1,19 @@
+{
+    "tag":  "200k",
+    "candidate":  "lab/candidates/release_r15main.js",
+    "engine":  "lab/src",
+    "positions":  10000,
+    "shards":  20,
+    "seed":  20261026,
+    "seedStride":  10000,
+    "depth":  3,
+    "q":  4,
+    "open":  4,
+    "maxRounds":  150,
+    "audit":  12,
+    "jobs":  4,
+    "outPrefix":  "data/selfplay-200k",
+    "artifactPrefix":  "nn-selfplay-200k",
+    "pad":  2,
+    "note":  "NN 云端正式量：20 shard × 1 万局面，教师 release_r15main（部署档 r15）；seed=20261026+shard*10000；4-core --jobs 4；产物 artifact nn-selfplay-200k-shard\u003cNN\u003e 保留 1 天"
+}
