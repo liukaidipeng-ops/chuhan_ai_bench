@@ -1,0 +1,8 @@
+# t5-xian-c3b-b（GitHub Actions 运行 40268745100）
+# 请求：{"match":"candidates/xian-c3b.js,candidates/release_r13b.js","pairs":150,"chunks":20,"seed":136000,"args":"--level hard --budget 3000","env":{},"note":"兵仙 Phase1c-C3b 第二组种子（xian-c3b.js vs release_r13b）。"}
+# 收到 20/20 段；出错 0 局
+新电脑得分 60.7%（300 局，150 对；95% 区间 55.1%～66.2%）
+  新电脑执汉 150 局 胜 99 和 0；执楚 150 局 胜 83 和 0
+  每对：两局全胜 55 对，一胜一负 72 对，两局全负 23 对；和棋 0 局
+  平均每步 322410 个节点
+  节奏：平均每局领先换手 0.44 次；赢家曾落后 ≥ 5 分（翻盘）的局 26.3%（300 局有记录）
