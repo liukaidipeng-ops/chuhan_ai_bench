@@ -45,9 +45,12 @@ const gameLines = [];
 for (let si = 0; si < files.length; si++) {
   const f = files[si];
   const buf = fs.readFileSync(f);
-  const offBase = si * 100000;
-  let off = F.HEADER_BYTES;
+  // 分片号优先从文件名解析（-shard<NN>），保持 game = 分片号*100000 + 局号；缺片时不会错位
+  const mShard = path.basename(f).match(/-shard(\d+)\.pos\.bin$/);
+  const offBase = (mShard ? Number(mShard[1]) : si) * 100000;
+  // 注意：body 是去掉头后的缓冲，偏移必须从 0 开始（原版从 HEADER_BYTES 起读会整体偏移 24 字节导致错位）
   const body = Buffer.from(buf.subarray(F.HEADER_BYTES));
+  let off = 0;
   let localRecs = 0;
   while (off + F.PREFIX_BYTES <= body.length) {
     const n = body[off + 9];
