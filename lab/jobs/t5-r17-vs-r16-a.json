@@ -1,0 +1,1 @@
+{"match": "candidates/release_r17b.js,candidates/release_r16.js", "pairs": 150, "chunks": 20, "seed": 141000, "args": "--level hard --budget 3000", "env": {}, "note": "r17（最终版=r17b，danger-only 升级筛选）vs r16 直接对照：新侧 release_r17b.js = r16 + 只在“帅区危险/被将军”时免费升级仅留防守型/必升（不再升远处炮车马）；对旧侧 release_r16.js（同基底）。判读：≈50%（CI 含 50，45–55 带内）→ 战力≤1pt、只改观感。pairs150/chunks20。"}

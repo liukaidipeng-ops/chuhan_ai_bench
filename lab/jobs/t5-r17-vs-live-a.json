@@ -1,0 +1,1 @@
+{"match": "candidates/release_r17b.js,candidates/live-prod.js", "pairs": 150, "chunks": 20, "seed": 143000, "args": "--level hard --budget 3000", "env": {}, "note": "r17（最终 r17b）对真线上 live-prod（生产口径，对照 r16 63.6% / r15 64.9%）；验收 ≥62%。pairs150/chunks20。"}

@@ -1,0 +1,1 @@
+{"match": "candidates/release_r17b.js,candidates/release_r16.js", "pairs": 150, "chunks": 20, "seed": 142000, "args": "--level hard --budget 3000", "env": {}, "note": "r17b（danger-only 升级筛选）vs r16 直接对照 第二组种子。"}
