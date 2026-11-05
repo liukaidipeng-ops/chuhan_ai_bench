@@ -1,0 +1,1 @@
+﻿{"match":"candidates/release_r19.js,candidates/live-prod.js","pairs":150,"chunks":20,"seed":154000,"args":"--level hard --budget 3000","env":{},"note":"r19a vs live-prod 第二组种子。"}
