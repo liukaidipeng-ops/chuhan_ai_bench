@@ -1,1 +1,1 @@
-﻿{"match":"candidates/release_r19.js,candidates/release_r17b.js","pairs":150,"chunks":20,"seed":152000,"args":"--level hard --budget 3000","env":{},"note":"r19a vs r17b 第二组种子。"}
+{"match":"candidates/release_r19.js,candidates/release_r17b.js","pairs":150,"chunks":20,"seed":152000,"args":"--level hard --budget 3000","env":{},"note":"r19a vs r17b 第二组种子。"}

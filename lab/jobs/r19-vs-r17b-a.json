@@ -1,1 +1,1 @@
-﻿{"match":"candidates/release_r19.js,candidates/release_r17b.js","pairs":150,"chunks":20,"seed":151000,"args":"--level hard --budget 3000","env":{},"note":"r19a（危险兵分支裁剪）vs 默认档 r17b 直接对打，第一组种子；验收：±50%（CI 含 50）视为强度不变。"}
+{"match":"candidates/release_r19.js,candidates/release_r17b.js","pairs":150,"chunks":20,"seed":151000,"args":"--level hard --budget 3000","env":{},"note":"r19a（危险兵分支裁剪）vs 默认档 r17b 直接对打，第一组种子；验收：±50%（CI 含 50）视为强度不变。"}

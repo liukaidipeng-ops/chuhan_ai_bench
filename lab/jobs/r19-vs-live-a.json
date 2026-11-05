@@ -1,1 +1,1 @@
-﻿{"match":"candidates/release_r19.js,candidates/live-prod.js","pairs":150,"chunks":20,"seed":153000,"args":"--level hard --budget 3000","env":{},"note":"r19a vs 线上原（live-prod），第一组种子；对照 r17b 60.5%（56.7–64.3）。"}
+{"match":"candidates/release_r19.js,candidates/live-prod.js","pairs":150,"chunks":20,"seed":153000,"args":"--level hard --budget 3000","env":{},"note":"r19a vs 线上原（live-prod），第一组种子；对照 r17b 60.5%（56.7–64.3）。"}
